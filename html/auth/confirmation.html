@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Enviado - Recuperação de Senha</title>
+  <link rel="stylesheet" href="../../css/tailwind/output.css">
+  <link rel="stylesheet" href="../../css/index.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+   <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-brand">
+
+  <!-- Ícone e Mensagem Principal -->
+  <div class="flex flex-col items-center justify-center space-y-6 text-center">
+
+    <!-- Ícone -->
+    <div class="flex items-center justify-center w-24 h-24 rounded-full bg-white/20 backdrop-blur-sm">
+      <i data-lucide="mail-check" class="w-12 h-12 text-white"></i>
+    </div>
+
+    <!-- Título -->
+    <h1 class="text-3xl font-bold text-highlight">Email Enviado!</h1>
+
+    <!-- Mensagem -->
+    <div class="max-w-md space-y-3">
+      <p class="text-lg text-white/90">
+        Enviamos um link de recuperação para o seu email.
+      </p>
+      <p class="text-sm text-white/70">
+        Verifique sua caixa de entrada e siga as instruções para redefinir sua senha.
+      </p>
+    </div>
+  </div>
+
+  <!-- Link Voltar ao Login-->
+  <div class="mt-16">
+    <a href="login.html"
+      class="inline-flex items-center space-x-2 font-medium transition-colors duration-200 text-white/80 hover:text-white">
+      <i data-lucide="arrow-left" class="w-5 h-5"></i>
+      <span>Voltar ao Login</span>
+    </a>
+  </div>
+
+  <script src="../../js/scripts.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full antialiased bg-gray-50">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <title>Usuários Operacionais</title>
+
+  <link rel="stylesheet" href="../../../../css/tailwind/output.css">
+  <link rel="stylesheet" href="../../../../css/index.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="h-full">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside id="sidebar"
+      class="fixed z-50 w-64 h-full border-r shadow-lg bg-gradient-brand sidebar-transition md:relative md:shadow-none sidebar-collapsed">
+
+      <!-- Cabeçalho da sidebar -->
+      <div class="sidebar-header">
+        <div class="flex-shrink-0">
+          <img src="../../../../assets/logos/IMG-20250702-WA0005-removebg-preview.png" alt="Logo GIAME"
+            class="sidebar-logo" />
+        </div>
+        <span class="sidebar-title">GIAME</span>
+      </div>
+
+      <!-- Conteúdo da sidebar -->
+      <div class="flex-1 overflow-y-auto">
+        <nav class="p-4">
+          <!-- Item direto: Dashboard -->
+          <a href="../index.html" class="sidebar-link">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 collapsibble-menu-icons"></i>
+            Dashboard
+          </a>
+
+          <!-- Seção: Solicitações -->
+          <div class="collapsible-section">
+            <button
+              class="collapsible-trigger sidebar-link w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group">
+              <div class="flex items-center gap-2">
+                <i data-lucide="mail-plus" class="w-4 h-4 collapsibble-menu-icons"></i>
+                <span class="truncate">Solicitações</span>
+              </div>
+              <i data-lucide="chevron-down" class="w-4 h-4 collapsibble-menu-icons dropdown-transition"></i>
+            </button>
+
+            <div class="mt-1 collapsible-content">
+              <div class="pl-4 space-y-1 border-l-2">
+                <a href="../solicitacoes/solicitacoes-pendentes.html" class="sidebar-subitem">
+                  <i data-lucide="clock-alert" class="w-4 h-4"></i> Solicitações pendentes
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção: Usuários -->
+          <div class="collapsible-section">
+            <button
+              class="collapsible-trigger sidebar-link w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group">
+              <div class="flex items-center gap-2">
+                <i data-lucide="user-cog" class="w-4 h-4 collapsibble-menu-icons"></i>
+                <span class="truncate">Gerir Usuários</span>
+              </div>
+              <i data-lucide="chevron-down" class="w-4 h-4 collapsibble-menu-icons dropdown-transition"></i>
+            </button>
+
+            <div class="mt-1 collapsible-content">
+              <div class="pl-4 space-y-1 border-l-2">
+                <a href="../usuarios/ver-usuarios.html" class="sidebar-subitem">
+                  <i data-lucide="users" class="w-4 h-4"></i> Ver Usuários
+                </a>
+                <a href="../usuarios/criar-usuario.html" class="sidebar-subitem">
+                  <i data-lucide="plus" class="w-4 h-4"></i> Criar Usuário
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <a href="../../contabilista/index.html" class="sidebar-link">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 collapsibble-menu-icons"></i>
+            Dashboard Contabilista
+          </a>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <div class="flex flex-col flex-1 main-content">
+      <!-- Header -->
+      <header class="header-container">
+        <button id="sidebar-toggle"
+          class="flex items-center justify-center flex-shrink-0 transition-colors duration-200 rounded-lg w-9 h-9">
+          <i data-lucide="panel-left" class="w-5 h-5"></i>
+        </button>
+      </header>
+
+      <!-- Conteúdo -->
+      <main class="flex-1 overflow-auto">
+        <div class=" page-content">
+          <h1 class="text-3xl font-semibold text-transparent bg-gradient-to-r from-primary to-secondary bg-clip-text">
+            Usuários
+          </h1>
+
+          <div class="flex flex-col gap-2">
+            <!-- Tabs -->
+            <div class="flex gap-2 mt-2">
+              <button onclick="showTab('tab1')" id="tab-tab1"
+                class="px-4 py-2 text-sm font-medium text-white transition-all duration-200 border border-gray-200 rounded-lg tab-button bg-primary">
+                Activos
+              </button>
+              <button onclick="showTab('tab2')" id="tab-tab2"
+                class="px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-200 border border-gray-200 rounded-lg tab-button hover:bg-gray-100">
+                Inactivos
+              </button>
+            </div>
+
+            <!-- Search + Registrar -->
+            <div class="flex flex-wrap items-center justify-between mb- gap-">
+              <!-- Search Input -->
+              <div class="relative w-full max-w-sm">
+                <span class="absolute inset-y-0 flex items-center text-gray-400 left-3">
+                  <i data-lucide="search" class="w-4 h-4"></i>
+                </span>
+                <input type="text" placeholder="Pesquisar usuário..."
+                  class="w-full px-10 py-2 text-sm transition-all duration-200 ease-in-out border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" />
+              </div>
+
+              <!-- Botão add -->
+              <button
+                class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors rounded-lg bg-primary"
+                onclick="window.location.href='criar-usuario.html'">
+                <i data-lucide="plus" class="w-4 h-4"></i>
+                Adicionar Usuário
+              </button>
+            </div>
+          </div>
+
+          <div id="content-tab1" class="tab-content">
+            <div class="overflow-hidden bg-white border rounded-lg shadow-sm">
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-700 ">
+                  <thead class="">
+                    <tr>
+                      <th>ID</th>
+                      <th>Nome</th>
+                      <th>Endereço</th>
+                      <th>Contacto</th>
+                      <th>E-mail</th>
+                      <th>Estado</th>
+                      <th>Pacote(Duração)</th>
+                      <th>Prazo Restante</th>
+                      <th class="text-right">Ações</th>
+                    </tr>
+                  </thead>
+
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td>1</td>
+                      <td>João Pedro</td>
+                      <td>Luanda, Angola</td>
+                      <td>+244 999 999 999</td>
+                      <td>joao@email.com</td>
+                      <td class="px-3 font-semibold text-primary">Activo</td>
+                      <td>Mínimo(30d)</td>
+                      <td class="px-3 font-semibold text-green-600">22 dias</td>
+                      <td class="pr-4 text-right">
+                        <div class="relative">
+                          <button
+                            class="p-1 text-gray-500 transition-colors duration-200 rounded-full hover:text-gray-700 hover:bg-gray-100"
+                            onclick="toggleDropdown(this)">
+                            <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                          </button>
+
+                          <div class="hidden bg-white border border-gray-200 rounded-lg shadow-lg w-36 dropdown-menu">
+                            <div class="py-1">
+                              <button
+                                class="flex items-center w-full gap-1 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 btn-acao"
+                                data-tipo="confirmar" data-msg="Deseja realmente activar este usuário?"
+                                data-title="Confirmar Operação">
+
+                                <i data-lucide="check" class="w-4 h-4"></i>
+                                Activar
+                              </button>
+                              <button onclick="window.location.href = 'editar-dados.html'"
+                                class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50">
+                                <i data-lucide="edit" class="w-4 h-4"></i>
+                                Editar
+                              </button>
+                              <button class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left btn-acao"
+                                data-tipo="apagar" data-msg="Tem certeza que quer remover este usuário?"
+                                data-title="Remover Usuário">
+                                <i data-lucide="trash2" class="w-4 h-4"></i>
+                                Remover
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>2</td>
+                      <td>Maria Santos</td>
+                      <td>Benguela, Angola</td>
+                      <td>+244 998 888 777</td>
+                      <td>maria@email.com</td>
+                      <td class="px-3 font-semibold text-primary">Activo</td>
+                      <td>Mínimo(30d)</td>
+                      <td class="px-3 font-semibold text-highlight">15 dias</td>
+                      <td class="pr-4 text-right">
+                        <div class="relative">
+                          <button
+                            class="p-1 text-gray-500 transition-colors duration-200 rounded-full hover:text-gray-700 hover:bg-gray-100"
+                            onclick="toggleDropdown(this)">
+                            <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                          </button>
+
+                          <div class="hidden bg-white border border-gray-200 rounded-lg shadow-lg w-36 dropdown-menu">
+                            <div class="py-1">
+                              <button
+                                class="flex items-center w-full gap-1 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 btn-acao"
+                                data-tipo="confirmar" data-msg="Deseja realmente activar este usuário?"
+                                data-title="Confirmar Operação">
+
+                                <i data-lucide="check" class="w-4 h-4"></i>
+                                Activar
+                              </button>
+                              <button onclick="window.location.href = 'editar-dados.html'"
+                                class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50">
+                                <i data-lucide="edit" class="w-4 h-4"></i>
+                                Editar
+                              </button>
+                              <button class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left btn-acao"
+                                data-tipo="apagar" data-msg="Tem certeza que quer remover este usuário?"
+                                data-title="Remover Usuário">
+                                <i data-lucide="trash2" class="w-4 h-4"></i>
+                                Remover
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>3</td>
+                      <td>Carlos Alberto</td>
+                      <td>Huambo, Angola</td>
+                      <td>+244 922 111 222</td>
+                      <td>carlos@empresa.com</td>
+                      <td class="px-3 font-semibold text-primary">Activo</td>
+                      <td>Médio(60d)</td>
+                      <td class="px-3 font-semibold text-red-600">3 dias</td>
+                      <td class="pr-4 text-right">
+                        <div class="relative">
+                          <button
+                            class="p-1 text-gray-500 transition-colors duration-200 rounded-full hover:text-gray-700 hover:bg-gray-100"
+                            onclick="toggleDropdown(this)">
+                            <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                          </button>
+
+                          <div class="hidden bg-white border border-gray-200 rounded-lg shadow-lg w-36 dropdown-menu">
+                            <div class="py-1">
+                              <button
+                                class="flex items-center w-full gap-1 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 btn-acao"
+                                data-tipo="confirmar" data-msg="Deseja realmente activar este usuário?"
+                                data-title="Confirmar Operação">
+
+                                <i data-lucide="check" class="w-4 h-4"></i>
+                                Activar
+                              </button>
+                              <button onclick="window.location.href = 'editar-dados.html'"
+                                class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50">
+                                <i data-lucide="edit" class="w-4 h-4"></i>
+                                Editar
+                              </button>
+                              <button class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left btn-acao"
+                                data-tipo="apagar" data-msg="Tem certeza que quer remover este usuário?"
+                                data-title="Remover Usuário">
+                                <i data-lucide="trash2" class="w-4 h-4"></i>
+                                Remover
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div id="content-tab2" class="hidden tab-content">
+            <div class="overflow-hidden bg-white border rounded-lg shadow-sm">
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-700 ">
+                  <thead class="">
+                    <tr>
+                      <th>ID</th>
+                      <th>Nome</th>
+                      <th>Endereço</th>
+                      <th>Contacto</th>
+                      <th>E-mail</th>
+                      <th>Estado</th>
+                      <th>Pacote(Duração)</th>
+                      <th>Prazo Restante</th>
+                      <th class="text-right">Ações</th>
+                    </tr>
+                  </thead>
+
+                  <tbody class="divide-y divide-gray-200">
+                    <tr>
+                      <td>1</td>
+                      <td>João Pedro</td>
+                      <td>Luanda, Angola</td>
+                      <td>+244 999 999 999</td>
+                      <td>joao@email.com</td>
+                      <td class="px-3 font-semibold text-gray-700">Inactivo</td>
+                      <td>Médio(60d)</td>
+                      <td class="px-3 font-semibold text-highlight">15 dias</td>
+                      <td class="pr-4 text-right">
+                        <div class="relative">
+                          <button
+                            class="p-1 text-gray-500 transition-colors duration-200 rounded-full hover:text-gray-700 hover:bg-gray-100"
+                            onclick="toggleDropdown(this)">
+                            <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                          </button>
+
+                          <div class="hidden bg-white border border-gray-200 rounded-lg shadow-lg w-36 dropdown-menu">
+                            <div class="py-1">
+                              <button
+                                class="flex items-center w-full gap-1 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 btn-acao"
+                                data-tipo="confirmar" data-msg="Deseja realmente activar este usuário?"
+                                data-title="Confirmar Operação">
+
+                                <i data-lucide="check" class="w-4 h-4"></i>
+                                Activar
+                              </button>
+                              <button onclick="window.location.href = 'editar-dados.html'"
+                                class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50">
+                                <i data-lucide="edit" class="w-4 h-4"></i>
+                                Editar
+                              </button>
+                              <button class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left btn-acao"
+                                data-tipo="apagar" data-msg="Tem certeza que quer remover este usuário?"
+                                data-title="Remover Usuário">
+                                <i data-lucide="trash2" class="w-4 h-4"></i>
+                                Remover
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>2</td>
+                      <td>Maria Santos</td>
+                      <td>Benguela, Angola</td>
+                      <td>+244 998 888 777</td>
+                      <td>maria@email.com</td>
+                      <td class="px-3 font-semibold text-gray-700">Inactivo</td>
+                      <td>Profissional(120d)</td>
+                      <td class="px-3 font-semibold text-red-600">5 dias</td>
+                      <td class="pr-4 text-right">
+                        <div class="relative">
+                          <button
+                            class="p-1 text-gray-500 transition-colors duration-200 rounded-full hover:text-gray-700 hover:bg-gray-100"
+                            onclick="toggleDropdown(this)">
+                            <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                          </button>
+
+                          <div class="hidden bg-white border border-gray-200 rounded-lg shadow-lg w-36 dropdown-menu">
+                            <div class="py-1">
+                              <button
+                                class="flex items-center w-full gap-1 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 btn-acao"
+                                data-tipo="confirmar" data-msg="Deseja realmente activar este usuário?"
+                                data-title="Confirmar Operação">
+
+                                <i data-lucide="check" class="w-4 h-4"></i>
+                                Activar
+                              </button>
+                              <button onclick="window.location.href = 'editar-dados.html'"
+                                class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50">
+                                <i data-lucide="edit" class="w-4 h-4"></i>
+                                Editar
+                              </button>
+                              <button class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left btn-acao"
+                                data-tipo="apagar" data-msg="Tem certeza que quer remover este usuário?"
+                                data-title="Remover Usuário">
+                                <i data-lucide="trash2" class="w-4 h-4"></i>
+                                Remover
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>3</td>
+                      <td>Carlos Alberto</td>
+                      <td>Huambo, Angola</td>
+                      <td>+244 922 111 222</td>
+                      <td>carlos@empresa.com</td>
+                      <td class="px-3 font-semibold text-gray-700">Inactivo</td>
+                      <td>Médio(60d)</td>
+                      <td class="px-3 font-semibold text-green-600">55 dias</td>
+                      <td class="pr-4 text-right">
+                        <div class="relative">
+                          <button
+                            class="p-1 text-gray-500 transition-colors duration-200 rounded-full hover:text-gray-700 hover:bg-gray-100"
+                            onclick="toggleDropdown(this)">
+                            <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                          </button>
+
+                          <div class="hidden bg-white border border-gray-200 rounded-lg shadow-lg w-36 dropdown-menu">
+                            <div class="py-1">
+                              <button
+                                class="flex items-center w-full gap-1 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 btn-acao"
+                                data-tipo="confirmar" data-msg="Deseja realmente activar este usuário?"
+                                data-title="Confirmar Operação">
+
+                                <i data-lucide="check" class="w-4 h-4"></i>
+                                Activar
+                              </button>
+                              <button onclick="window.location.href = 'editar-dados.html'"
+                                class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50">
+                                <i data-lucide="edit" class="w-4 h-4"></i>
+                                Editar
+                              </button>
+                              <button class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left btn-acao"
+                                data-tipo="apagar" data-msg="Tem certeza que quer remover este usuário?"
+                                data-title="Remover Usuário">
+                                <i data-lucide="trash2" class="w-4 h-4"></i>
+                                Remover
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Overlay para mobile -->
+  <div id="mobile-overlay" class="fixed inset-0 z-40 hidden transition-opacity duration-300 bg-black/50 md:hidden">
+  </div>
+
+  <script src="../../../../js/scripts.js"></script>
+</body>
+
+</html>

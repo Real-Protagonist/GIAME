@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========== CORES INTELIGENTES COM HOVER ========== */
+
+/* Azul forte → texto branco + hover azul escuro */
+.bg-primary {
+    @apply bg-[#154A99] text-white hover:bg-[#0f3a78] transition;
+}
+
+/* Azul escuro → texto branco + hover ainda mais escuro */
+.bg-secondary {
+    @apply bg-[#031D42] text-white hover:bg-[#02152d] transition;
+}
+
+/* Amarelo vibrante → texto escuro + hover dourado mais escuro */
+.bg-highlight {
+    @apply bg-[#FFBF12] text-[#031D42] hover:bg-[#e0a800] transition;
+}
+
+/* Fundo branco → texto escuro + hover cinzinha leve */
+.bg-background {
+    @apply bg-white text-[#031D42] hover:bg-[#f5f5f5] transition;
+}
+
+/* Fundo cinza claro → texto escuro + hover cinza um pouco mais escuro */
+.bg-muted {
+    @apply bg-[#F3F4F6] text-[#031D42] hover:bg-[#e5e7eb] transition;
+}
+
+/* Gradiente → texto branco + hover com filtro escurecendo */
+.bg-gradient-brand {
+    @apply text-white transition;
+    background-image: linear-gradient(to bottom right, #031D42, #154A99);
+}
+
+/* Adicionais úteis */
+.bg-danger {
+    @apply text-white transition bg-red-600 hover:bg-red-700;
+}
+
+.bg-success {
+    @apply text-white transition bg-green-500 hover:bg-green-600;
+}
+
+.tab-btn {
+    @apply px-4 py-2 text-sm font-medium transition-all duration-200 border rounded-lg;
+}
+
+.active-tab {
+    @apply text-white bg-primary border-primary;
+}
+
+.tab-btn:not(.active-tab) {
+    @apply text-gray-700 bg-white border-gray-300 hover:bg-gray-100;
+}

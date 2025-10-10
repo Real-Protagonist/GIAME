@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Enviado - Recuperação de Senha</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-blue-500 to-purple-600 flex flex-col justify-center items-center p-6">
+
+  <!-- Ícone e Mensagem Principal (Centro X e Y) -->
+  <div class="flex flex-col items-center justify-center space-y-6 text-center">
+
+    <!-- Ícone -->
+    <div class="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+      <i data-lucide="mail-check" class="w-12 h-12 text-white"></i>
+    </div>
+
+    <!-- Título -->
+    <h1 class="text-3xl font-bold text-white">Email Enviado!</h1>
+
+    <!-- Mensagem -->
+    <div class="space-y-3 max-w-md">
+      <p class="text-white/90 text-lg">
+        Enviamos um link de recuperação para o seu email.
+      </p>
+      <p class="text-white/70 text-sm">
+        Verifique sua caixa de entrada e siga as instruções para redefinir sua senha.
+      </p>
+    </div>
+  </div>
+
+  <!-- Link Voltar ao Login (Centro X, parte inferior) -->
+  <div class="mt-16">
+    <a href="/login"
+      class="inline-flex items-center space-x-2 text-white/80 hover:text-white transition-colors duration-200 font-medium">
+      <i data-lucide="arrow-left" class="w-5 h-5"></i>
+      <span>Voltar ao Login</span>
+    </a>
+  </div>
+
+  <script>
+    // Inicializar os ícones do Lucide
+    lucide.createIcons();
+  </script>
+</body>
+
+</html>

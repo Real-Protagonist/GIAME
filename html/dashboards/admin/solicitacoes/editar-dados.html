@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full antialiased bg-gray-50">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="color-scheme" content="light dark" />
+	<title>Editar Conta</title>
+
+	<link rel="stylesheet" href="../../../../css/tailwind/output.css">
+	<link rel="stylesheet" href="../../../../css/index.css">
+	<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+	<script src="https://cdn.tailwindcss.com"></script>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="h-full">
+	<div class="flex h-screen">
+		<!-- Sidebar -->
+		<aside id="sidebar"
+			class="fixed z-50 w-64 h-full border-r shadow-lg bg-gradient-brand sidebar-transition md:relative md:shadow-none sidebar-collapsed">
+			<!-- Cabeçalho da sidebar -->
+			<div class="sidebar-header">
+				<div class="flex-shrink-0">
+					<img src="../../../../assets/logos/IMG-20250702-WA0005-removebg-preview.png" alt="Logo GIAME"
+						class="sidebar-logo" />
+				</div>
+				<span class="sidebar-title">GIAME</span>
+			</div>
+
+			<!-- Conteúdo da sidebar -->
+			<div class="flex-1 overflow-y-auto">
+				<nav class="p-4">
+					<!-- Item direto: Dashboard -->
+					<a href="../index.html" class="sidebar-link">
+						<i data-lucide="layout-dashboard" class="w-5 h-5 collapsibble-menu-icons"></i>
+						Dashboard
+					</a>
+
+					<!-- Seção: Solicitações -->
+					<div class="collapsible-section">
+						<button
+							class="collapsible-trigger sidebar-link w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group">
+							<div class="flex items-center gap-2">
+								<i data-lucide="mail-plus" class="w-4 h-4 collapsibble-menu-icons"></i>
+								<span class="truncate">Solicitações</span>
+							</div>
+							<i data-lucide="chevron-down" class="w-4 h-4 collapsibble-menu-icons dropdown-transition"></i>
+						</button>
+
+						<div class="mt-1 collapsible-content">
+							<div class="pl-4 space-y-1 border-l-2">
+								<a href="../solicitacoes/solicitacoes-pendentes.html" class="sidebar-subitem">
+									<i data-lucide="clock-alert" class="w-4 h-4"></i> Solicitações pendentes
+								</a>
+							</div>
+						</div>
+					</div>
+
+					<!-- Seção: Usuários -->
+					<div class="collapsible-section">
+						<button
+							class="collapsible-trigger sidebar-link w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 group">
+							<div class="flex items-center gap-2">
+								<i data-lucide="user-cog" class="w-4 h-4 collapsibble-menu-icons"></i>
+								<span class="truncate">Gerir Usuários</span>
+							</div>
+							<i data-lucide="chevron-down" class="w-4 h-4 collapsibble-menu-icons dropdown-transition"></i>
+						</button>
+
+						<div class="mt-1 collapsible-content">
+							<div class="pl-4 space-y-1 border-l-2">
+								<a href="../usuarios/ver-usuarios.html" class="sidebar-subitem">
+									<i data-lucide="users" class="w-4 h-4"></i> Ver Usuários
+								</a>
+								<a href="../usuarios/ver-usuarios.html" class="sidebar-subitem">
+									<i data-lucide="plus" class="w-4 h-4"></i> Criar Usuário
+								</a>
+							</div>
+						</div>
+					</div>
+
+					<a href="../../contabilista/index.html" class="sidebar-link">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 collapsibble-menu-icons"></i>
+            Dashboard Contabilista
+          </a>
+				</nav>
+			</div>
+		</aside>
+
+		<!-- Conteúdo principal -->
+		<div class="flex flex-col flex-1 main-content">
+			<!-- Header -->
+			<header class="header-container">
+				<button id="sidebar-toggle"
+					class="flex items-center justify-center flex-shrink-0 transition-colors duration-200 rounded-lg w-9 h-9">
+					<i data-lucide="panel-left" class="w-5 h-5"></i>
+				</button>
+			</header>
+
+			<!-- Conteúdo -->
+			<main class="flex-1 overflow-auto">
+				<div class=" page-content">
+					<h1
+						class="mx-auto mt-6 text-3xl font-semibold text-center text-transparent bg-gradient-to-r from-primary to-secondary bg-clip-text">
+						Editar Conta
+					</h1>
+
+					<div class="flex justify-center px-4">
+						<div class="w-full max-w-3xl p-10 bg-white border rounded-2xl">
+							<form class="w-full gap-6 form-grid form-col-2">
+								<!-- Nome -->
+								<div class="form-full">
+									<label for="name" class="label">Nome</label>
+									<input type="text" id="name" name="name" required placeholder="João da Silva" class="input"
+										value="João da Silva" />
+								</div>
+
+								<!-- Email -->
+								<div class="form-full">
+									<label for="email" class="label">Email</label>
+									<input type="email" id="email" name="email" required placeholder="email@exemplo.com" class="input"
+										value="joao@email.com" />
+								</div>
+
+								<!-- Contacto -->
+								<div class="form-full">
+									<label for="contact" class="label">Contacto</label>
+									<input type="text" id="contact" name="contact" required placeholder="+244 923 456 789"
+										pattern="\+244 \d{3} \d{3} \d{3}" title="Formato esperado: +244 XXX XXX XXX" class="input"
+										value="+244 923 456 789" />
+								</div>
+
+								<!-- Endereço -->
+								<div class="form-full">
+									<label for="address" class="label">Endereço</label>
+									<input type="text" id="address" name="address" required placeholder="Rua 12, Bairro Azul, Luanda"
+										class="input" value="Rua 12, Maculusso, Luanda" />
+								</div>
+
+								<!-- Senha com toggle -->
+								<div class="relative form-full">
+									<label for="password" class="label">
+										Nova Senha <span class="text-red-500">*</span>
+									</label>
+									<div class="relative">
+										<input type="password" id="password" name="password" required placeholder="********"
+											class="pr-10 input" value="senhaExemplo" />
+										<button type="button" onclick="togglePassword()"
+											class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700">
+											<i id="eyeIcon" data-lucide="eye-off" class="w-5 h-5"></i>
+										</button>
+									</div>
+								</div>
+
+								<!-- Botão de editar -->
+								<div class="mt-2 form-full">
+									<button type="submit" class="w-full btn">
+										Salvar alterações
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<!-- Overlay para mobile -->
+	<div id="mobile-overlay" class="fixed inset-0 z-40 hidden transition-opacity duration-300 bg-black/50 md:hidden">
+	</div>
+
+	<script src="../../../../js/scripts.js"></script>
+</body>
+
+</html>
