@@ -23,7 +23,7 @@
         // $nacionalidade = htmlspecialchars($_POST["nacionalidade"]);
         $nif = htmlspecialchars($_POST["nif"]);
         $email_usuario = htmlspecialchars($_POST["email_usuario"]);
-        $senha_usuario = password_hash($_POST["senha_usuario"], PASSWORD_BCRYPT);
+        $senha_usuario = sha1(md5(($_POST["senha_usuario"])));
 
         // Verifica se o email já está registrado
         $stmt = $conn->prepare("SELECT COUNT(*) FROM usuario WHERE email = :email_usuario");

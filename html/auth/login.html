@@ -3,8 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta senha="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GIAME - Criar Conta </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIAME - Login</title>
   <link rel="stylesheet" href="../../css/tailwind/output.css">
   <link rel="stylesheet" href="../../css/index.css">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
@@ -36,18 +36,18 @@
         <!-- Email -->
         <div class="form-full">
           <label for="email" class="label">Email</label>
-          <input type="email" id="email" name="email" required placeholder="email@exemplo.com" class="input" />
+          <input type="email" id="email_usuario" name="email_usuario" required placeholder="email@exemplo.com" class="input" />
         </div>
 
         <!-- Senha -->
         <div class="form-full">
           <label for="senha" class="label">Senha</label>
-          <input type="password" id="senha" name="senha" required placeholder="********" class="input" />
+          <input type="password" id="senha_usuario" name="senha_usuario" required placeholder="********" class="input" />
         </div>
 
         <!-- Botão de enviar -->
         <div class="mt-2 form-full">
-          <button type="submit" class="btn" onclick="window.location.href='../dashboards/admin/index.html'">
+          <button type="submit" class="btn">
             Login
           </button>
         </div>
@@ -72,7 +72,48 @@
     </div>
   </div>
 
-  <script src="../../js/scripts.js"></script>
-</body>
+  <!-- <script src="../../js/scripts.js"></script> -->
+  <script>
+    function showAlert(message, type = 'success') {
+      const alertBox = document.getElementById('alert-message');
+      alertBox.textContent = message;
+      alertBox.className = `fixed top-6 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded shadow text-white text-center ${type === 'success' ? 'bg-green-600' : 'bg-red-600' }`;
+      alertBox.classList.remove('hidden');
 
+      setTimeout(() => {
+        alertBox.classList.add('hidden');
+      }, 4500);
+    }
+
+    document.querySelector('form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      // Aqui você pode adicionar a lógica de autenticação
+      const form = e.target;
+      const formData = new FormData(form);
+
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = value;
+      });
+      try {
+        const response = await fetch('../../assets/conf/conf-login.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        if (response.ok && result.message)
+          window.location.href = '../dashboards/admin/index.html'; // Redireciona para a página inicial
+        else
+          showAlert(result.error || 'Credenciais inválidas.', 'error');
+      } catch (error) {
+        showAlert('Ocorreu um erro no login.', 'error');
+      }
+    });
+  </script>
+  <div class="fixed top-6 left-1/2 transform -translate-x-1/2 hidden px-6 py-3 rounded shadow text-center" id="alert-message"></div>
+</body>
 </html>
