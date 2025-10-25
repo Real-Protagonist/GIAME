@@ -132,34 +132,35 @@
           <div class="flex justify-center px-4">
             <div class="w-full max-w-3xl p-10 bg-white border rounded-xl">
               <form class="w-full gap-6 form-grid form-col-2" id="form-submit" data-title="Cliente Adicionado! "
-                data-msg="O cliente foi adicionado com sucesso." data-redirect="ver-clientes.html">
+                data-id="cliente" data-msg="O cliente foi adicionado com sucesso." data-redirect="ver-clientes.html">
 
-                <!-- Tipo de Cliente -->
+                <!-- Tipo de Empresa -->
                 <div class="form-full">
-                  <label for="tipo-cliente" class="label">
-                    Tipo de Cliente <span class="text-red-500">*</span>
+                  <label for="tipo-empresa" class="label">
+                    Tipo de Empresa <span class="text-red-500">*</span>
                   </label>
-                  <select id="tipo-cliente" name="tipo-cliente" required class="input">
-                    <option value="" disabled selected>Selecione um tipo de cliente</option>
-                    <option value="empresa">Empresa</option>
-                    <option value="particular">Particular</option>
+                  <select id="tipo-empresa" name="tipo-empresa" required class="input">
+                    <option value="" disabled>Selecione um tipo de Empresa</option>
+                    <option value="Sucursal">Sucursal</option>
+                    <option value="Filial">Filial</option>
+                    <option value="Matriz">Matriz</option>
                   </select>
                 </div>
 
                 <!-- Nome da empresa -->
                 <div class="form-full">
-                  <label for="name" class="label">
+                  <label for="nome" class="label">
                     Nome <span class="text-red-500">*</span>
                   </label>
-                  <input type="text" id="name" name="name" required placeholder="João da Silva S.A" class="input" />
+                  <input type="text" id="nome" name="nome" required placeholder="João da Silva S.A" class="input" />
                 </div>
 
                 <!-- Sector -->
                 <div class="form-full">
-                  <label for="tipo-cliente" class="label">
+                  <label for="sector-empresa" class="label">
                     Sector <span class="text-red-500">*</span>
                   </label>
-                  <select id="tipo-cliente" name="tipo-cliente" required class="input">
+                  <select id="sector-empresa" name="sector-empresa" required class="input">
                     <option value="" disabled selected>Selecione um sector</option>
                     <option value="empresa">Agricultura</option>
                     <option value="particular">Insdústria</option>
@@ -167,34 +168,103 @@
                   </select>
                 </div>
 
-                <!-- Tamanho -->
+
                 <div class="form-full">
-                  <label for="tipo-cliente" class="label">
-                    Tamanho <span class="text-red-500">*</span>
+                  <label for="particularidade" class="label">
+                    Particularidade <span class="text-red-500">*</span>
                   </label>
-                  <select id="tipo-cliente" name="tipo-cliente" required class="input">
-                    <option value="" disabled selected>Selecione o tamanho</option>
-                    <option value="empresa">Pequena</option>
-                    <option value="particular">Média</option>
-                    <option value="particular">Grande</option>
+                  <select id="particularidade" name="particularidade" required class="input">
+                    <option value="" disabled selected>Selecione uma particularidade</option>
+                    <option value="Privada">Privada</option>
+                    <option value="Publica">Pública</option>
+                    <option value="Sem Fins Lucrativos">Sem Fins Lucrativos</option>
                   </select>
                 </div>
 
-                <!-- Endereço -->
-                <div class="form-full">
-                  <label for="address" class="label">
-                    Endereço <span class="text-red-500">*</span>
+                <!-- Tamanho -->
+                <div>
+                  <label for="tamanho-empresa" class="label">
+                    Tamanho <span class="text-red-500">*</span>
                   </label>
-                  <input type="text" id="address" name="address" required placeholder="Rua 12, Bairro Azul, Luanda"
+                  <select id="tamanho-empresa" name="tamanho-empresa" required class="input">
+                    <option value="" disabled selected>Selecione o tamanho</option>
+                    <option value="Pequena">Pequena</option>
+                    <option value="Média">Média</option>
+                    <option value="Microempresa">Microempresa</option>
+                    <option value="Grande">Grande</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="tipo-sociedade" class="label">
+                    Tipo Sociedade <span class="text-red-500">*</span>
+                  </label>
+                  <select id="tipo-sociedade" name="tipo-sociedade" required class="input">
+                    <option value="" disabled selected>Selecione o tipo de sociedade</option>
+                    <option value="SQ">Sociedade Por Quotas</option>
+                    <option value="SA">Sociedade Anónima</option>
+                    <option value="SU">Sociedade Unipessoal</option>
+                  </select>
+                </div>
+
+                <!-- Morada -->
+                <div>
+                  <label for="morada" class="label">
+                    Morada <span class="text-red-500">*</span>
+                  </label>
+                  <input type="text" id="morada" name="morada" required placeholder="Casa/aparmento nº 123, Rua 12"
                     class="input" />
+                </div>
+
+                <div>
+                  <label for="bairro" class="label">
+                    Bairro <span class="text-red-500">*</span>
+                  </label>
+                  <input type="text" id="bairro" name="bairro" required placeholder="Bairro Azul"
+                    class="input" />
+                </div>
+
+                <div>
+                  <label for="municipio" class="label">
+                    Município <span class="text-red-500">*</span>
+                  </label>
+                  <input type="text" id="municipio" name="municipio" required placeholder="Ingombotas"
+                    class="input" />
+                </div>
+
+                <div>
+                  <label for="provincia" class="label">
+                    Província <span class="text-red-500">*</span>
+                  </label>
+                  <select id="provincia" name="provincia" required class="input">
+                    <option value="" disabled selected>Selecione a província</option>
+                    <option value="Luanda">Luanda</option>
+                    <option value="Benguela">Benguela</option>
+                    <option value="Huambo">Huambo</option>
+                    <option value="Bié">Bié</option>
+                    <option value="Cabinda">Cabinda</option>
+                    <option value="Cunene">Cunene</option>
+                    <option value="Huíla">Huíla</option>
+                    <option value="Malanje">Malanje</option>
+                    <option value="Namibe">Namibe</option>
+                    <option value="Uíge">Uíge</option>
+                    <option value="Zaire">Zaire</option>
+                    <option value="Lunda Norte">Lunda Norte</option>
+                    <option value="Lunda Sul">Lunda Sul</option>
+                    <option value="Moxico">Moxico</option>
+                    <option value="Cuando Cubango">Cuando Cubango</option>
+                    <option value="Cuanza Norte">Cuanza Norte</option>
+                    <option value="Cuanza Sul">Cuanza Sul</option>
+                    <option value="Bengo">Bengo</option>
+                  </select>
                 </div>
 
                 <!-- Contacto -->
                 <div>
-                  <label for="contact" class="label">
+                  <label for="contacto" class="label">
                     Contacto <span class="text-red-500">*</span>
                   </label>
-                  <input type="text" id="contact" name="contact" required placeholder="+244 923 456 789"
+                  <input type="text" id="contacto" name="contacto" required placeholder="+244 923 456 789"
                     pattern="\+244 \d{3} \d{3} \d{3}" title="Formato esperado: +244 XXX XXX XXX" class="input" />
                 </div>
 
@@ -208,10 +278,17 @@
 
                 <!-- Email -->
                 <div class="form-full">
-                  <label for="email" class="label">
+                  <label for="email-empresa" class="label">
                     Email <span class="text-red-500">*</span>
                   </label>
-                  <input type="email" id="email" name="email" required placeholder="email@exemplo.com" class="input" />
+                  <input type="email" id="email-empresa" name="email-empresa" required placeholder="email@exemplo.com" class="input" />
+                </div>
+
+                <div class="form-full">
+                  <label for="site-empresa" class="label">
+                    Site
+                  </label>
+                  <input type="url" id="site-empresa" name="site-empresa" required placeholder="https://www.exemplo.com" class="input" />
                 </div>
 
                 <!-- Objecto social -->
@@ -242,10 +319,10 @@
 
                 <!-- Representante -->
                 <div class="form-full">
-                  <label for="representante" class="label">
+                  <label for="representante-legal" class="label">
                     Representante Legal <span class="text-red-500">*</span>
                   </label>
-                  <input type="text" id="representante" name="representante" required placeholder="João da Silva"
+                  <input type="text" id="representante-legal" name="representante-legal" required placeholder="João da Silva"
                     class="input" />
                 </div>
 
@@ -347,6 +424,7 @@
   </div>
 
   <script src="../../../../js/scripts.js"></script>
+  <!-- <script src="../../../../js/adicionar-cliente.js"></script> -->
 </body>
 
 </html>

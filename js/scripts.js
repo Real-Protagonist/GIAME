@@ -728,10 +728,37 @@ document.addEventListener("click", function (e) {
 // ==========================
 const form = document.querySelector("#form-submit");
 
+async function cadastroCliente(form) {
+  const formData = new FormData(form);
+  const data = {};
+  formData.forEach((value, key) => {
+    data[key] = value;
+  });
+
+  try {
+    const response = await fetch("../../../../assets/conf/conf-novo-cliente.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    const result = await response.json();
+    if (response.ok) {
+      return result;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error("Erro ao enviar dados:", error);
+  }
+}
+
 if (form) {
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
     const form = this;
+    var vf = 0;
 
     if (!form.checkValidity()) {
       form.reportValidity();
@@ -740,30 +767,41 @@ if (form) {
 
     const titulo = form.dataset.title || "Sucesso!";
     const mensagem = form.dataset.msg || "Tudo certo!";
+    const id = form.dataset.id || "cliente";
     const destino = form.dataset.redirect || "index.html";
+    if (id === "cliente") {
+      const result = await cadastroCliente(form);
 
-    Swal.fire({
-      html: `
-      <div class="flex flex-col items-center text-center">
-        <i data-lucide="circle-check" class="w-14 h-14 mb-3 text-green-500"></i>
-        <h2 class="text-xl font-semibold text-gray-900 mb-2">${titulo}</h2>
-        <p class="text-gray-700 text-sm">${mensagem}</p>
-      </div>
-    `,
-
-      showConfirmButton: true,
-      confirmButtonText: "Fechar",
-      customClass: {
-        popup: "rounded-xl p-6 shadow-xl bg-white",
-        confirmButton: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium",
-      },
-      buttonsStyling: false,
-      didOpen: () => lucide.createIcons(),
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = destino;
+      if (result.error === false) {
+        vf = 1;
+      } else if (result === null) {
+        vf = 0;
       }
-    });
+    }
+
+    if (vf === 1)
+      Swal.fire({
+        html: `
+        <div class="flex flex-col items-center text-center">
+          <i data-lucide="circle-check" class="w-14 h-14 mb-3 text-green-500"></i>
+          <h2 class="text-xl font-semibold text-gray-900 mb-2">${titulo}</h2>
+          <p class="text-red-700 text-sm">${mensagem}</p>
+        </div>
+      `,
+
+        showConfirmButton: true,
+        confirmButtonText: "Fechar",
+        customClass: {
+          popup: "rounded-xl p-6 shadow-xl bg-white",
+          confirmButton: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium",
+        },
+        buttonsStyling: false,
+        didOpen: () => lucide.createIcons(),
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = destino;
+        }
+      });
   });
 }
 

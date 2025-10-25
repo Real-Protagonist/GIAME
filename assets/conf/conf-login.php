@@ -22,9 +22,17 @@ $stmt->bindParam(':email_usuario', $email_usuario);
 $stmt->bindParam(':senha_usuario', $senha_usuario);
 $stmt->execute();
 if ($stmt->fetchColumn() > 0) {
+    $_SESSION['user_id'] = $email_usuario;
+    $stmt = $conn->prepare('SELECT id FROM usuario WHERE email LIKE :email_usuario');
+    $stmt->bindParam(':email_usuario', $email_usuario);
+    $stmt->execute();
+    $_SESSION['us_id'] = $stmt->fetchColumn();
     echo json_encode(["message" => "login realizado com sucesso."]);
     exit();
 } else {
+    session_unset();
+    session_destroy();
+    session_abort();
     echo json_encode(["error" => "Email ou senha incorretos."]);
     exit();
 }

@@ -1,3 +1,16 @@
+<?php
+  session_start();
+  if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../../login.html");
+    exit();
+  }
+  require_once '../../../assets/conf/conf-dbcon.php';
+  $user_id = $_SESSION['user_id'];
+  $stmt = $conn->prepare('SELECT * FROM usuario INNER JOIN pessoa ON usuario.pessoa_id = pessoa.id WHERE email = :email');
+  $stmt->bindParam(':email', $user_id);
+  $stmt->execute();
+  $result = $stmt->fetchAll();
+?>
 <!DOCTYPE html>
 <html lang="en" class="h-full antialiased bg-gray-50">
 
@@ -119,7 +132,7 @@
         <div class="mx-auto space-y-4 page-content">
           <!-- Saudações -->
           <div>
-            <h1 class="text-2xl font-semibold ">Olá, Usuário</h1>
+            <h1 class="text-2xl font-semibold ">Olá, <?= $result[0]['primeiro_nome']." ".$result[0]['ultimo_nome'] ?></h1>
             <p class="text-sm text-gray-500">Aqui está o resumo da sua plataforma contábil.</p>
           </div>
 
