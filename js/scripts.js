@@ -730,10 +730,16 @@ const form = document.querySelector("#form-submit");
 
 async function cadastroCliente(form) {
   const formData = new FormData(form);
+  // formData.append('socios', socios);
   const data = {};
   formData.forEach((value, key) => {
     data[key] = value;
   });
+
+  // Adicionar sócios ao objeto de dados
+  // if (Array.isArray(socios)) {
+    data.socios = socios;
+  // }
 
   try {
     const response = await fetch("../../../../assets/conf/conf-novo-cliente.php", {
@@ -750,7 +756,8 @@ async function cadastroCliente(form) {
       return null;
     }
   } catch (error) {
-    console.error("Erro ao enviar dados:", error);
+    alert("Erro ao enviar dados: ");
+    null;
   }
 }
 
@@ -779,29 +786,29 @@ if (form) {
       }
     }
 
-    if (vf === 1)
-      Swal.fire({
-        html: `
-        <div class="flex flex-col items-center text-center">
-          <i data-lucide="circle-check" class="w-14 h-14 mb-3 text-green-500"></i>
-          <h2 class="text-xl font-semibold text-gray-900 mb-2">${titulo}</h2>
-          <p class="text-red-700 text-sm">${mensagem}</p>
-        </div>
-      `,
+    // if (vf === 1)
+    //   Swal.fire({
+    //     html: `
+    //     <div class="flex flex-col items-center text-center">
+    //       <i data-lucide="circle-check" class="w-14 h-14 mb-3 text-green-500"></i>
+    //       <h2 class="text-xl font-semibold text-gray-900 mb-2">${titulo}</h2>
+    //       <p class="text-red-700 text-sm">${mensagem}</p>
+    //     </div>
+    //   `,
 
-        showConfirmButton: true,
-        confirmButtonText: "Fechar",
-        customClass: {
-          popup: "rounded-xl p-6 shadow-xl bg-white",
-          confirmButton: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium",
-        },
-        buttonsStyling: false,
-        didOpen: () => lucide.createIcons(),
-      }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = destino;
-        }
-      });
+    //     showConfirmButton: true,
+    //     confirmButtonText: "Fechar",
+    //     customClass: {
+    //       popup: "rounded-xl p-6 shadow-xl bg-white",
+    //       confirmButton: "bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium",
+    //     },
+    //     buttonsStyling: false,
+    //     didOpen: () => lucide.createIcons(),
+    //   }).then((result) => {
+    //     if (result.isConfirmed) {
+    //       window.location.href = destino;
+    //     }
+    //   });
   });
 }
 

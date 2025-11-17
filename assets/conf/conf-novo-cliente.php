@@ -97,13 +97,43 @@ if ($_SERVER["CONTENT_TYPE"] == "application/json") {
     $stmt->bindParam(':pessoa_id', $pessoa_id);
 
     if ($stmt->execute()) {
+        $id_empresa = $conn->lastInsertId();
+
+        // Associar empresa ao usuário
+        $stmt = $conn->prepare("INSERT INTO empresas_usr (empresa_id, usuario_id) VALUES (:empresa_id, :usuario_id)");
+        $stmt->bindParam(':empresa_id', $id_empresa);
+        $stmt->bindParam(':usuario_id', $pessoa_id);
+        $stmt->execute();
+
+        // Cadastrar sócio
+        if (is_array($dados['socios']))
+            $_POST = $dados;
+        foreach ($_POST['socios'] as $socio) {
+            // $pessoa_id                  = htmlspecialchars($socio["pessoa_id"]);
+            $participacao               = ($socio["participacao"]);
+            $contacto_socio             = ($socio["contacto"]);
+            $data_entrada               = date('Y-m-d');
+
+            $stmt = $conn->prepare("INSERT INTO socios (pessoa_id, empresa_id, participacao, contacto, data_entrada) 
+                                    VALUES (:pessoa_id, :empresa_id, :participacao, :contacto, :data_entrada)");
+            $stmt->bindParam(':pessoa_id', $pessoa_id);
+            $stmt->bindParam(':empresa_id', $id_empresa);
+            $stmt->bindParam(':participacao', $participacao);
+            $stmt->bindParam(':contacto', $contacto_socio);
+            $stmt->bindParam(':data_entrada', $data_entrada);
+            $stmt->execute();
+        }
+
         echo json_encode(["error" => false, "message" => "Cadastro realizado com sucesso."]);
     } else {
         echo json_encode(["error" => true, "message" => "Erro ao cadastrar."]);
+        
+        // Em caso de erro, remover os dados inseridos
         $stmt = $conn->prepare("DELETE FROM enderecos WHERE id = :id_endereco");
         $stmt->bindParam(':id_endereco', $id_endereco);
         $stmt->execute();
 
+        // Remover contacto
         $stmt = $conn->prepare("DELETE FROM contactos WHERE id = :id_contacto");
         $stmt->bindParam(':id_contacto', $id_contacto);
         $stmt->execute();

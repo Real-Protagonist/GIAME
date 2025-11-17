@@ -204,13 +204,13 @@
               </a>
 
               <!-- Nova Conta -->
-              <a href="PGC/criar-conta.html"
+              <!-- <a href="PGC/criar-conta.html"
                 class="flex flex-col items-center justify-center gap-2 p-4 transition bg-white border border-gray-200 shadow-sm rounded-xl hover:bg-gray-50 group">
                 <div class="p-2 transition-all rounded-lg bg-primary/10 text-primary group-hover:text-highlight">
                   <i data-lucide="book" class="w-5 h-5"></i>
                 </div>
                 <p class="text-sm text-gray-700">Adicionar Conta (PGC)</p>
-              </a>
+              </a> -->
             </div>
           </section>
         </div>
