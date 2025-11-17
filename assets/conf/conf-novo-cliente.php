@@ -109,14 +109,14 @@ if ($_SERVER["CONTENT_TYPE"] == "application/json") {
         if (is_array($dados['socios']))
             $_POST = $dados;
         foreach ($_POST['socios'] as $socio) {
-            // $pessoa_id                  = htmlspecialchars($socio["pessoa_id"]);
+            $nome_socio                 = ($socio["nome"]);
             $participacao               = ($socio["participacao"]);
             $contacto_socio             = ($socio["contacto"]);
             $data_entrada               = date('Y-m-d');
 
-            $stmt = $conn->prepare("INSERT INTO socios (pessoa_id, empresa_id, participacao, contacto, data_entrada) 
-                                    VALUES (:pessoa_id, :empresa_id, :participacao, :contacto, :data_entrada)");
-            $stmt->bindParam(':pessoa_id', $pessoa_id);
+            $stmt = $conn->prepare("INSERT INTO socios (nome_socio, empresa_id, participacao, contacto, data_entrada) 
+                                    VALUES (:nome_socio, :empresa_id, :participacao, :contacto, :data_entrada)");
+            $stmt->bindParam(':nome_socio', $nome_socio);
             $stmt->bindParam(':empresa_id', $id_empresa);
             $stmt->bindParam(':participacao', $participacao);
             $stmt->bindParam(':contacto', $contacto_socio);
