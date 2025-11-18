@@ -786,8 +786,6 @@ if (form) {
       }
     }
 
-    console.log("Valor de vf:", vf);
-
     if (vf === 1)
       Swal.fire({
         html: `

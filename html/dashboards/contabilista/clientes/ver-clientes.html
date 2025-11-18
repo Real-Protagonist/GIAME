@@ -480,20 +480,38 @@
   <div id="mobile-overlay" class="fixed inset-0 z-40 hidden transition-opacity duration-300 bg-black/50 md:hidden">
   </div>
 
-  <script src="../../../../js/scripts.js"></script>
+  <script src="../../../../js/scripts.js" defer></script>
   <script>
     // $(window).load(function () {
-      alert('Página carregada com sucesso!');
-      $.ajax({
-        url: '../../../../assets/listas/clientes-empresas.php',
-        method: 'GET',
-        success: function (data) {
-          document.getElementById('tabela-clientes').innerHTML = data;
-        },
-        error: function (error) {
-          console.error('Erro ao carregar os dados:', error);
-        }
+      // alert('Página carregada com sucesso!');
+      // $.ajax({
+      //   url: '../../../../assets/listas/clientes-empresa.php',
+      //   method: 'GET',
+      //   success: function (data) {
+      //     document.getElementById('tabela-clientes').innerHTML = data;
+      //   },
+      //   error: function (error) {
+      //     console.error('Erro ao carregar os dados:', error);
+      //   }
+      // });
+      document.addEventListener("DOMContentLoaded", function() {
+        fetch('../../../../assets/listas/clientes-empresa.php')
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById('tabela-clientes').innerHTML += data;
+            // document.getElementsByTagName('script')[4].remove();
+            // var s = document.createElement("script");
+            // s.src = "../../../../js/scripts.js";
+            // document.body.appendChild(s);
+            if (window.lucide) {
+              window.lucide.createIcons();
+            }
+          })
+          .catch(error => {
+            console.error('Erro ao carregar os dados:', error);
+          });
       });
+
     // });
   </script>
 </body>

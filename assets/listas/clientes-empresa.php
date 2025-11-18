@@ -6,21 +6,22 @@ session_start();
 
 if (isset($_SESSION['us_id'])) {
     $search = htmlspecialchars($_SESSION['us_id']);
-    $stmt = $conn->prepare("SELECT * FROM empresas INNER JOIN empresas_usr ON empresas.id = empresas_usr.empresa_id INNER JOIN usuario ON empresas_usr.usuario_id = usuario.id WHERE usuario.id = :search");
+    $stmt = $conn->prepare("SELECT * FROM empresas INNER JOIN empresas_usr ON empresas.id = empresas_usr.empresa_id INNER JOIN usuario ON empresas_usr.usuario_id = usuario.id WHERE usuario.id = :search LIMIT 3");
     $stmt->bindParam(':search', $search);
     $stmt->execute();
     $empresas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $content = '';
+    $cont = 1;
     foreach ($empresas as $empresa) {
         $content .= '<tr>
-                      <td>1</td>
-                      <td>'.$empresa['nome'].'</td>
-                      <td>'.$empresa['localizacao'].'</td>
-                      <td>'.$empresa['telefone'].'</td>
-                      <td>'.$empresa['email'].'</td>
-                      <td class="px-3 text-gray-500">'.$empresa['tipo'].'</td>
-                      <td>'.$empresa['tamanho'].'</td>
-                      <td>'.$empresa['sector_atividade'].'</td>
+                      <td>'.$cont.'</td>
+                      <td>'.$empresa["nome"].'</td>
+                      <td>'.$empresa["capital_social"].'</td>
+                      <td>'.$empresa["contacto_id"].'</td>
+                      <td>'.$empresa["email"].'</td>
+                      <td class="px-3 text-gray-500">'.$empresa["tipo"].'</td>
+                      <td>'.$empresa["tamanho"].'</td>
+                      <td>'.$empresa["sector_atividade"].'</td>
                       <td class="pr-4 text-right">
                         <div class="relative">
                           <button
@@ -31,12 +32,12 @@ if (isset($_SESSION['us_id'])) {
 
                           <div class="hidden bg-white border border-gray-200 rounded-lg shadow-lg w-36 dropdown-menu">
                             <div class="py-1">
-                              <button onclick="window.location.href ="visualizar-cliente-empresa.html"
+                              <button onclick="window.location.href =\'visualizar-cliente-empresa.html?empresa=\'"
                                 class="flex items-center w-full gap-1 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50">
                                 <i data-lucide="eye" class="w-4 h-4"></i>
                                 ver
                               </button>
-                              <button onclick="window.location.href ="editar-cliente.html"
+                              <button onclick="window.location.href =\'editar-cliente.html\'"
                                 class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50">
                                 <i data-lucide="edit" class="w-4 h-4"></i>
                                 Editar
@@ -52,9 +53,11 @@ if (isset($_SESSION['us_id'])) {
                         </div>
                       </td>
                     </tr>';
+        $cont++;
     }
 } else {
     $stmt = $conn->prepare("SELECT * FROM empresas");
 }
+      echo $content;
 
 ?>
