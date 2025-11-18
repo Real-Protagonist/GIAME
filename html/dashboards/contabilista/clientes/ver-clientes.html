@@ -482,18 +482,6 @@
 
   <script src="../../../../js/scripts.js" defer></script>
   <script>
-    // $(window).load(function () {
-      // alert('Página carregada com sucesso!');
-      // $.ajax({
-      //   url: '../../../../assets/listas/clientes-empresa.php',
-      //   method: 'GET',
-      //   success: function (data) {
-      //     document.getElementById('tabela-clientes').innerHTML = data;
-      //   },
-      //   error: function (error) {
-      //     console.error('Erro ao carregar os dados:', error);
-      //   }
-      // });
       document.addEventListener("DOMContentLoaded", function() {
         fetch('../../../../assets/listas/clientes-empresa.php')
           .then(response => response.text())
@@ -511,8 +499,6 @@
             console.error('Erro ao carregar os dados:', error);
           });
       });
-
-    // });
   </script>
 </body>
 

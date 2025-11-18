@@ -6,7 +6,7 @@ session_start();
 
 if (isset($_SESSION['us_id'])) {
     $search = htmlspecialchars($_SESSION['us_id']);
-    $stmt = $conn->prepare("SELECT * FROM empresas INNER JOIN empresas_usr ON empresas.id = empresas_usr.empresa_id INNER JOIN usuario ON empresas_usr.usuario_id = usuario.id WHERE usuario.id = :search LIMIT 3");
+    $stmt = $conn->prepare("SELECT * FROM empresas as emp INNER JOIN empresas_usr ON emp.id = empresas_usr.empresa_id INNER JOIN usuario ON empresas_usr.usuario_id = usuario.id WHERE usuario.id = :search LIMIT 10");
     $stmt->bindParam(':search', $search);
     $stmt->execute();
     $empresas = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -32,12 +32,12 @@ if (isset($_SESSION['us_id'])) {
 
                           <div class="hidden bg-white border border-gray-200 rounded-lg shadow-lg w-36 dropdown-menu">
                             <div class="py-1">
-                              <button onclick="window.location.href =\'visualizar-cliente-empresa.html?empresa=\'"
+                              <button onclick="window.location.href =\'visualizar-cliente-empresa?empresa='.$empresa["id"].' \'"
                                 class="flex items-center w-full gap-1 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50">
                                 <i data-lucide="eye" class="w-4 h-4"></i>
                                 ver
                               </button>
-                              <button onclick="window.location.href =\'editar-cliente.html\'"
+                              <button onclick="window.location.href =\'editar-cliente.html?empresa='.$empresa["id"].'\'"
                                 class="flex items-center w-full gap-2 px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-50">
                                 <i data-lucide="edit" class="w-4 h-4"></i>
                                 Editar

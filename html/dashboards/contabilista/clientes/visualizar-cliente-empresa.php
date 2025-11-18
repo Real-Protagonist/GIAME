@@ -1,3 +1,34 @@
+<?php
+  session_start();
+  if (!isset($_SESSION['us_id'])) {
+    header('Location: ../../../login.html');
+    session_abort();
+    session_unset();
+    session_destroy();
+    exit();
+  }
+  $empresa_id = isset($_GET['empresa']) ? htmlspecialchars($_GET['empresa']) : null;
+
+  require_once '../../../../assets/conf/conf-dbcon.php';
+  require_once '../../../../assets/models/mdl-empresa.php';
+  require_once '../../../../assets/models/mdl-endereco.php';
+  require_once '../../../../assets/models/mdl-contacto.php';
+
+  $get = $conn->prepare("SELECT empresas.*, enderecos.*, contactos.* FROM empresas INNER JOIN enderecos ON empresas.endereco = enderecos.id INNER JOIN contactos ON empresas.contacto_id = contactos.id WHERE empresas.id = :empresa_id LIMIT 1");
+  $get->bindParam(':empresa_id', $empresa_id);
+  $get->execute();
+  $empresa = $get->fetch(PDO::FETCH_ASSOC);
+  if (!$empresa) {
+    header('Location: ver-clientes.html');
+    exit();
+  }
+
+  $get_socios = $conn->prepare("SELECT socios.* FROM socios WHERE empresa_id = :empresa_id");
+  $get_socios->bindParam(':empresa_id', $empresa_id);
+  $get_socios->execute();
+  $socios = $get_socios->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="en" class="h-full antialiased bg-gray-50">
 
@@ -5,7 +36,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light dark" />
-  <title>Cliente - X</title>
+  <title>Cliente - <?= htmlspecialchars($empresa['nome']); ?></title>
 
   <link rel="stylesheet" href="../../../../css/tailwind/output.css">
   <link rel="stylesheet" href="../../../../css/index.css">
@@ -119,12 +150,12 @@
             </div>
             <div class="flex-1">
               <div class="flex items-center justify-between">
-                <h2 class="text-2xl font-semibold">João da Silva S.A</h2>
+                <h2 class="text-2xl font-semibold"><?= htmlspecialchars($empresa['nome']); ?></h2>
                 <span class="px-3 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">Ativa</span>
               </div>
               <div class="mt-1 text-sm text-gray-600">
-                <p>NIF: <span class="font-medium text-gray-800">5001010101</span></p>
-                <p>Representante: <span class="font-medium text-gray-800">João da Silva</span></p>
+                <p>NIF: <span class="font-medium text-gray-800"><?= htmlspecialchars($empresa['nif']); ?></span></p>
+                <p>Representante: <span class="font-medium text-gray-800"><?= htmlspecialchars($empresa['representante_legal']); ?></span></p>
               </div>
             </div>
           </section>
@@ -136,7 +167,7 @@
             <div class="grid grid-cols-1 gap-4 text-sm md:grid-cols-3">
               <div>
                 <p class="text-gray-500">Capital Social</p>
-                <p class="font-medium">15.000.000 KZ</p>
+                <p class="font-medium"><?= htmlspecialchars($empresa['capital_social']); ?></p>
               </div>
 
               <div>
@@ -156,12 +187,12 @@
 
               <div>
                 <p class="text-gray-500">Data de Constituição</p>
-                <p class="font-medium">2022-03-15</p>
+                <p class="font-medium"><?= htmlspecialchars($empresa['data_fundacao']); ?></p>
               </div>
 
               <div>
                 <p class="text-gray-500">Objecto Social</p>
-                <p class="font-medium">Prestação de Serviços</p>
+                <p class="font-medium"><?= htmlspecialchars($empresa['objecto_social']); ?></p>
               </div>
 
               <div>
@@ -186,52 +217,28 @@
 
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
               <!-- Card 1 -->
+               <?php foreach ($socios as $socio): ?>
               <div class="p-4 transition bg-white border rounded-lg hover:shadow-sm">
                 <div class="flex items-center gap-3">
                   <div class="p-2 rounded-md bg-gray-50">
                     <i data-lucide="user" class="w-5 h-5 text-gray-600"></i>
                   </div>
                   <div>
-                    <p class="text-sm font-medium text-gray-900">Pedro Manuel</p>
-                    <p class="text-xs text-gray-500">+244 926 111 222</p>
+                    <p class="text-sm font-medium text-gray-900"><?= htmlspecialchars($socio['nome_socio']); ?></p>
+                    <p class="text-xs text-gray-500"><?= htmlspecialchars($socio['contacto']); ?></p>
                   </div>
                 </div>
                 <div class="mt-2 text-xs text-gray-500">
-                  Participação: <span class="font-medium text-gray-700">5.000.000 KZ</span>
+                  Participação: <span class="font-medium text-gray-700"><?= htmlspecialchars($socio['participacao']); ?> KZ</span>
                 </div>
               </div>
+              <?php endforeach; ?>
 
               <!-- Card 2 -->
-              <div class="p-4 transition bg-white border rounded-lg hover:shadow-sm">
-                <div class="flex items-center gap-3">
-                  <div class="p-2 rounded-md bg-gray-50">
-                    <i data-lucide="user" class="w-5 h-5 text-gray-600"></i>
-                  </div>
-                  <div>
-                    <p class="text-sm font-medium text-gray-900">Maria dos Anjos</p>
-                    <p class="text-xs text-gray-500">+244 929 333 444</p>
-                  </div>
-                </div>
-                <div class="mt-2 text-xs text-gray-500">
-                  Participação: <span class="font-medium text-gray-700">5.000.000 KZ</span>
-                </div>
-              </div>
+              
 
               <!-- Card 2 -->
-              <div class="p-4 transition bg-white border rounded-lg hover:shadow-sm">
-                <div class="flex items-center gap-3">
-                  <div class="p-2 rounded-md bg-gray-50">
-                    <i data-lucide="user" class="w-5 h-5 text-gray-600"></i>
-                  </div>
-                  <div>
-                    <p class="text-sm font-medium text-gray-900">Marisa José</p>
-                    <p class="text-xs text-gray-500">+244 929 333 444</p>
-                  </div>
-                </div>
-                <div class="mt-2 text-xs text-gray-500">
-                  Participação: <span class="font-medium text-gray-700">5.000.000 KZ</span>
-                </div>
-              </div>
+              
             </div>
           </section>
 
