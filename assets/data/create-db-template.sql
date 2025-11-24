@@ -295,5 +295,14 @@ INSERT INTO `conta_principal` (`id`, `codigo`, `descricao`, `nivel`) VALUES
     ('22.5', 'Outros materiais', '2', '22');
 
     SELECT * FROM lancamento_itens;
+
+    SELECT li.*, l.data_lancamento, l.lancamento, sc.codigo AS sub_conta_codigo, sc.descricao AS sub_conta_descricao
+                                        FROM lancamento_itens li
+                                        JOIN lancamentos l ON li.lancamento_id = l.lancamento_id
+                                        JOIN sub_conta_2 sc ON li.sub_conta_id = sc.id
+                                        JOIN empresas e ON l.empresa_id = e.id_empresa
+                                        JOIN usuario u ON l.criador_usuario = u.id
+                                        WHERE u.id = 2
+                                        ORDER BY l.data_lancamento DESC, l.lancamento DESC
 -- Additional table and procedure definitions can be added here as needed.
 -- End of create-db-template.sql
