@@ -1,32 +1,43 @@
 <?php
-  session_start();
-  if (!isset($_SESSION['us_id'])) {
-    header('Location: ../../../login.html');
-    session_abort();
-    session_unset();
-    session_destroy();
-    exit();
-  }
-  $empresa_id = isset($_GET['empresa']) ? htmlspecialchars($_GET['empresa']) : null;
+session_start();
+if (!isset($_SESSION['us_id'])) {
+  header('Location: ../../../login.html');
+  session_abort();
+  session_unset();
+  session_destroy();
+  exit();
+}
+$empresa_id = isset($_GET['empresa']) ? htmlspecialchars($_GET['empresa']) : null;
 
-  require_once '../../../../assets/conf/conf-dbcon.php';
-  require_once '../../../../assets/models/mdl-empresa.php';
-  require_once '../../../../assets/models/mdl-endereco.php';
-  require_once '../../../../assets/models/mdl-contacto.php';
+require_once '../../../../assets/conf/conf-dbcon.php';
+require_once '../../../../assets/models/mdl-empresa.php';
+require_once '../../../../assets/models/mdl-endereco.php';
+require_once '../../../../assets/models/mdl-contacto.php';
 
-  $get = $conn->prepare("SELECT empresas.*, enderecos.*, contactos.* FROM empresas INNER JOIN enderecos ON empresas.endereco = enderecos.id INNER JOIN contactos ON empresas.contacto_id = contactos.id WHERE empresas.id = :empresa_id LIMIT 1");
-  $get->bindParam(':empresa_id', $empresa_id);
-  $get->execute();
-  $empresa = $get->fetch(PDO::FETCH_ASSOC);
-  if (!$empresa) {
-    header('Location: ver-clientes.html');
-    exit();
-  }
+$get = $conn->prepare("SELECT empresas.*, enderecos.*, contactos.* FROM empresas INNER JOIN enderecos ON empresas.endereco = enderecos.id INNER JOIN contactos ON empresas.contacto_id = contactos.id WHERE empresas.id_empresa = :empresa_id LIMIT 1");
+$get->bindParam(':empresa_id', $empresa_id);
+$get->execute();
+$empresa = $get->fetch(PDO::FETCH_ASSOC);
 
-  $get_socios = $conn->prepare("SELECT socios.* FROM socios WHERE empresa_id = :empresa_id");
-  $get_socios->bindParam(':empresa_id', $empresa_id);
-  $get_socios->execute();
-  $socios = $get_socios->fetchAll(PDO::FETCH_ASSOC);
+$get_address = $conn->prepare("SELECT * FROM enderecos INNER JOIN empresas ON enderecos.id = empresas.endereco WHERE empresas.id_empresa = :empresa");
+$get_address->bindParam(':empresa', $empresa['id_empresa']);
+$get_address->execute();
+$address = $get_address->fetch(PDO::FETCH_ASSOC);
+
+$get_contact = $conn->prepare("SELECT * FROM contactos INNER JOIN empresas ON contactos.id = empresas.contacto_id WHERE empresas.id_empresa = :empresa");
+$get_contact->bindParam(':empresa', $empresa['id_empresa']);
+$get_contact->execute();
+$contact = $get_contact->fetch(PDO::FETCH_ASSOC);
+
+if (!$empresa) {
+  header('Location: ver-clientes.html');
+  exit();
+}
+
+$get_socios = $conn->prepare("SELECT socios.* FROM socios WHERE empresa_id = :empresa_id");
+$get_socios->bindParam(':empresa_id', $empresa_id);
+$get_socios->execute();
+$socios = $get_socios->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -155,7 +166,9 @@
               </div>
               <div class="mt-1 text-sm text-gray-600">
                 <p>NIF: <span class="font-medium text-gray-800"><?= htmlspecialchars($empresa['nif']); ?></span></p>
-                <p>Representante: <span class="font-medium text-gray-800"><?= htmlspecialchars($empresa['representante_legal']); ?></span></p>
+                <p>Representante: <span
+                    class="font-medium text-gray-800"><?= htmlspecialchars($empresa['representante_legal']); ?></span>
+                </p>
               </div>
             </div>
           </section>
@@ -172,17 +185,17 @@
 
               <div>
                 <p class="text-gray-500">Endereço</p>
-                <p class="font-medium">Rua 12, Bairro Azul, Luanda</p>
+                <p class="font-medium"><?= htmlspecialchars($address['morada'] . ", " . $address['bairro'] . "; " . $address['provincia']); ?></p>
               </div>
 
               <div>
                 <p class="text-gray-500">Contacto</p>
-                <p class="font-medium">+244 923 456 789</p>
+                <p class="font-medium"><?= htmlspecialchars($contact['telefone']); ?></p>
               </div>
 
               <div>
                 <p class="text-gray-500">Email</p>
-                <p class="font-medium">empresa@email.com</p>
+                <p class="font-medium"><?= htmlspecialchars($contact['email']); ?></p>
               </div>
 
               <div>
@@ -204,8 +217,10 @@
                 <p class="mb-1 text-gray-500">Ano de Análise</p>
                 <select name="ano_analise" id="anoAnalise" class="input md:!w-auto w-full">
                   <option value="" disabled selected>Selecione o ano de análise</option>
-                  <option value="2025">2025</option>
-                  <option value="2024">2024</option>
+                  <?php $currentYear = date("Y");
+                  for ($year = $currentYear; $year >= $currentYear - 5; $year--): ?>
+                    <option value="<?= $year; ?>"><?= $year; ?></option>
+                  <?php endfor; ?>
                 </select>
               </div>
             </div>
@@ -217,28 +232,29 @@
 
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
               <!-- Card 1 -->
-               <?php foreach ($socios as $socio): ?>
-              <div class="p-4 transition bg-white border rounded-lg hover:shadow-sm">
-                <div class="flex items-center gap-3">
-                  <div class="p-2 rounded-md bg-gray-50">
-                    <i data-lucide="user" class="w-5 h-5 text-gray-600"></i>
+              <?php foreach ($socios as $socio): ?>
+                <div class="p-4 transition bg-white border rounded-lg hover:shadow-sm">
+                  <div class="flex items-center gap-3">
+                    <div class="p-2 rounded-md bg-gray-50">
+                      <i data-lucide="user" class="w-5 h-5 text-gray-600"></i>
+                    </div>
+                    <div>
+                      <p class="text-sm font-medium text-gray-900"><?= htmlspecialchars($socio['nome_socio']); ?></p>
+                      <p class="text-xs text-gray-500"><?= htmlspecialchars($socio['contacto']); ?></p>
+                    </div>
                   </div>
-                  <div>
-                    <p class="text-sm font-medium text-gray-900"><?= htmlspecialchars($socio['nome_socio']); ?></p>
-                    <p class="text-xs text-gray-500"><?= htmlspecialchars($socio['contacto']); ?></p>
+                  <div class="mt-2 text-xs text-gray-500">
+                    Participação: <span class="font-medium text-gray-700"><?= htmlspecialchars($socio['participacao']); ?>
+                      KZ</span>
                   </div>
                 </div>
-                <div class="mt-2 text-xs text-gray-500">
-                  Participação: <span class="font-medium text-gray-700"><?= htmlspecialchars($socio['participacao']); ?> KZ</span>
-                </div>
-              </div>
               <?php endforeach; ?>
 
               <!-- Card 2 -->
-              
+
 
               <!-- Card 2 -->
-              
+
             </div>
           </section>
 
@@ -248,7 +264,7 @@
 
             <div class="grid grid-cols-4 gap-4 md:grid-cols-4">
               <!-- Ver Lançamentos -->
-              <a href="../lancamentos/ver-lancamentos.html"
+              <a href="../lancamentos/ver-lancamentos?cliente=<?= $empresa_id; ?>"
                 class="flex flex-col items-center justify-center gap-2 p-4 transition bg-white border border-gray-200 shadow-sm rounded-xl hover:bg-gray-50 group">
                 <div class="p-2 transition-all rounded-lg bg-primary/10 text-primary group-hover:text-highlight">
                   <i data-lucide="list" class="w-5 h-5"></i>
@@ -257,8 +273,8 @@
               </a>
 
               <!-- Novo Lançamento -->
-              <a href="../lancamentos/criar-lancamentos.html"
-                class="flex flex-col items-center justify-center gap-2 p-4 transition bg-white border border-gray-200 shadow-sm rounded-xl hover:bg-gray-50 group">
+              <a href="../lancamentos/criar-lancamentos?cliente=<?= $empresa_id; ?>"
+                id="link-lance" class="flex flex-col items-center justify-center gap-2 p-4 transition bg-white border border-gray-200 shadow-sm rounded-xl hover:bg-gray-50 group">
                 <div class="p-2 transition-all rounded-lg bg-primary/10 text-primary group-hover:text-highlight">
                   <i data-lucide="plus" class="w-5 h-5"></i>
                 </div>
@@ -344,6 +360,9 @@
   <div id="mobile-overlay" class="fixed inset-0 z-40 hidden transition-opacity duration-300 bg-black/50 md:hidden">
   </div>
 
+  <script>
+    const empresa_id = `<?= $empresa_id; ?>`;
+  </script>
   <script src="../../../../js/scripts.js"></script>
 </body>
 

@@ -1,3 +1,14 @@
+<?php
+session_start();
+ if (!isset($_SESSION['us_id'])) {
+  header('Location: ../../login.html');
+  exit();
+}
+require_once '../../../../assets/conf/conf-dbcon.php';
+$empresa_id = isset($_GET['cliente']) ? htmlspecialchars($_GET['cliente']) : null;
+
+?>
+
 <!DOCTYPE html>
 <html lang="en" class="h-full antialiased bg-gray-50">
 

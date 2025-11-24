@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const numeroFinal = `${numeroAleatorio}${dataAtual}`; // Ex: 732505042025
 
   // Exibir no input
-  document.getElementById('numero_lancamento').value = numeroFinal;
+  // document.getElementById('numero_lancamento').value = numeroFinal;
 });
 
 
@@ -550,7 +550,61 @@ function AdicionarLinha() {
   AdicionarEventosDeInputNaLinha(novaLinha);
 
   tbody.appendChild(novaLinha);
+  console.log("Linha adicionada: ", novaLinha);
 }
+
+function coletarDadosLancamento() {
+  const linhas = document.querySelectorAll("tbody tr");
+  const dadosLancamento = [];
+
+  linhas.forEach((linha, index) => {
+    const conta = linha.querySelector('select[name="conta_debito"]') ?.value || '';
+    const valorDebito = parseFloat(linha.querySelector('input[name="valor_debito"]') ?.value) || 0;
+    const valorCredito = parseFloat(linha.querySelector('input[name="valor_credito"]') ?.value) || 0;
+    const subconta = linha.querySelector('select[name="subconta_lancamento_deb"]') ?.value || '';
+    const descricao = linha.querySelector('input[name="descricao_movimento"]') ?.value || '';
+
+    if (conta || descricao || valorDebito || valorCredito !== '0' || subconta !== '0') {
+      dadosLancamento.push({
+        linha: index + 1,
+        conta: conta,
+        // descricao: descricao,
+        valorDebito: parseFloat(valorDebito),
+        valorCredito: parseFloat(valorCredito),
+        subconta: subconta
+      });
+    }
+  })
+  return dadosLancamento;
+}
+
+async function enviarLancamento(dadosFormulario, linhasLancamento) {
+  const dadosCompletos = {
+    ...dadosFormulario, // outros dados do formulário
+    linhas: linhasLancamento, // dados das linhas do lançamento
+    total_debito: document.getElementById('total_debito')?.value || '0',
+    total_credito: document.getElementById('total_credito')?.value || '0',
+    diferenca: document.getElementById('diferenca')?.value || '0'
+  };
+
+  try {
+    const response = await fetch('../../../../assets/conf/conf-novo-lancamento.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dadosCompletos)
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    // console.error('Erro ao enviar lançamento: ', error);
+    return { error: true, message: 'Erro de Conexão' };
+  }
+}
+
+
 
 
 // ==========================
@@ -606,7 +660,7 @@ function AtualizarTotais() {
 
   // Habilitar/desabilitar botão
   if (btnRegistrar) {
-    if (diferenca !== 0) {
+    if (diferenca === 0) {
       btnRegistrar.disabled = true;
       btnRegistrar.classList.add("opacity-50", "cursor-not-allowed");
       btnRegistrar.classList.remove("hover:bg-opacity-90");
@@ -786,6 +840,25 @@ if (form) {
       }
     }
 
+    if (id === "lancamento") {
+      const formData = new FormData(this);
+      const dadosFormulario = {};
+      formData.forEach((value, key) => {
+        dadosFormulario[key] = value;
+      });
+
+      const linhasLancamento = coletarDadosLancamento();
+      const result = await enviarLancamento(dadosFormulario, linhasLancamento);
+      // console.log("Dados do lançamento: ", dadosFormulario);
+      // console.log("Linhas do lançamento: ", linhasLancamento);
+
+      if (result.error === false) {
+        vf = 1;
+      } else if (result === null) {
+        vf = 0;
+      }
+    }
+
     if (vf === 1)
       Swal.fire({
         html: `
@@ -840,9 +913,11 @@ window.addEventListener('DOMContentLoaded', function () {
 // ===========================
 const selectAno = document.getElementById('anoAnalise');
 const secaoAccoes = document.getElementById('accoes');
+const anc = document.getElementById('link-lance');
 
 if (selectAno && secaoAccoes) {
   selectAno.addEventListener('change', () => {
+    anc.href = `../lancamentos/criar-lancamentos?cliente=${empresa_id}&ano=${selectAno.value}`;
     if (selectAno.value) {
       secaoAccoes.classList.remove('hidden');
     } else {
@@ -861,3 +936,44 @@ valorDebito.addEventListener('input', () => {
   const valorFormatado = valor.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
   valorDebito.value = valorFormatado;
 });
+
+function subConta(select) {
+  // const subContaInput = document.getElementById('sub_conta');
+  // const selectedOption = select.options[select.selectedIndex];
+  // const subContaValue = selectedOption.getAttribute('data-sub-conta') || '';
+  // subContaInput.value = subContaValue;
+  fetch('../../../../assets/conf/conf-get-subconta.php', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: `conta_id=${encodeURIComponent(select.value)}`
+  })
+    .then(response => response.text())
+    .then(data => {
+      console.log("data");
+      document.getElementById('subconta_lancamento').innerHTML += data;
+      // document.getElementById('sub-c').innerText += `
+      // <select name="subconta_lancamento_deb" id="subconta_lancamento" class="font-normal input" required>
+      // ${data}
+      // </select>`;
+      // lucide.createIcons();
+      // const subContaInput = document.getElementById('sub_conta');
+      // subContaInput.value = data.sub_conta || '';
+    })
+    .catch(error => {
+      console.error('Erro ao buscar sub conta:', error);
+    });
+
+  // $.ajax({
+  //   type: 'POST',
+  //   url: '../../../../assets/conf/conf-get-subconta.php',
+  //   data: { conta_id: select.value },
+  //   success: function (data) {
+  //     document.getElementById('subconta_lancamento').innerText += data;
+  //   },
+  //   error: function (error) {
+  //     console.error('Erro ao buscar sub conta:', error);
+  //   }
+  // });
+}

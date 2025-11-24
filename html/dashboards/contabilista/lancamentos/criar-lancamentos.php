@@ -1,3 +1,30 @@
+<?php
+session_start();
+if (!isset($_SESSION['us_id'])) {
+  header('Location: ../../login.html');
+  exit();
+}
+require_once '../../../../assets/conf/conf-dbcon.php';
+
+$get_nome = $conn->prepare("SELECT primeiro_nome, ultimo_nome FROM pessoa INNER JOIN usuario ON pessoa.id = usuario.pessoa_id WHERE usuario.id = :user_id LIMIT 1");
+$get_nome->bindParam(':user_id', $_SESSION['us_id']);
+$get_nome->execute();
+$nome_result = $get_nome->fetch(PDO::FETCH_ASSOC);
+$_SESSION['nome'] = $nome_result['primeiro_nome'] . ' ' . $nome_result['ultimo_nome'];
+
+$empresa_id = isset($_GET['cliente']) ? htmlspecialchars($_GET['cliente']) : null;
+
+$get = $conn->prepare("SELECT empresas.*, enderecos.*, contactos.* FROM empresas INNER JOIN enderecos ON empresas.endereco = enderecos.id INNER JOIN contactos ON empresas.contacto_id = contactos.id WHERE empresas.id_empresa = :empresa_id LIMIT 1");
+$get->bindParam(':empresa_id', $empresa_id);
+$get->execute();
+$empresa = $get->fetch(PDO::FETCH_ASSOC);
+
+$get_lancamento_numero = $conn->prepare("SELECT MAX(lancamento_id) AS max_lancamento FROM lancamentos");
+$get_lancamento_numero->execute();
+$lancamento_result = $get_lancamento_numero->fetch(PDO::FETCH_ASSOC);
+$next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancamento'] + 1 : 1;
+?>
+
 <!DOCTYPE html>
 <html lang="en" class="h-full antialiased bg-gray-50">
 
@@ -115,8 +142,8 @@
 
       <!-- Conteúdo -->
       <main class="flex-1 overflow-auto">
-        <form class="page-content form-grid form-col-3" id="form-submit" data-title="Lançamento Criado!"
-          data-msg="O lançamento foi Criado com sucesso." data-redirect="ver-lancamentos.html">
+        <form class="page-content form-grid form-col-3" id="form-submit" data-title="Lançamento Criado!" data-id="lancamento"
+          data-msg="O lançamento foi Criado com sucesso." data-redirect="ver-lancamentos">
           <h1
             class="text-2xl font-semibold text-center text-transparent md:text-start md:text-3xl bg-gradient-to-r from-primary to-secondary bg-clip-text">
             Adicionar Lançamentos
@@ -132,19 +159,21 @@
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               <div>
                 <label for="numero_lancamento" class="label">Nº Lançamento</label>
-                <input type="text" name="numero_lancamento" id="numero_lancamento" class="input"
-                  placeholder="Ex: 000123" readonly/>
+                <input type="text" name="numero_lancamento" id="numero_lancamento" class="input" value="<?= date("Ym").$next_lancamento_numero ?>"
+                  placeholder="Ex: 000123" readonly />
               </div>
 
               <div>
                 <label for="nif_empresa" class="label">NIF da Empresa</label>
                 <input type="text" name="nif_empresa" id="nif_empresa" class="input" placeholder="Ex: 500123456"
-                  value="500123LA456" required />
+                  value="<?= htmlspecialchars($empresa['nif']); ?>" readonly required />
               </div>
 
               <div>
                 <label for="criado_por" class="label">Criado por</label>
-                <input type="text" name="criado_por" id="criado_por" class="input" placeholder="Seu Nome" required />
+                <input type="text" name="criado_por" id="criado_por" class="input"
+                value="<?= $_SESSION['nome'] ?>" placeholder="Seu Nome" readonly
+                  required />
               </div>
 
               <div>
@@ -168,7 +197,7 @@
               <div>
                 <label for="ano_analise" class="label">Ano de Análise</label>
                 <input type="text" name="ano_analise" id="ano_analise" class="cursor-not-allowed input"
-                  placeholder="2025" required readonly value="2025" />
+                  placeholder="2025" required readonly value="<?= htmlspecialchars($_GET['ano'] ?? '2025'); ?>" />
               </div>
 
               <div>
@@ -178,7 +207,8 @@
 
               <div>
                 <label for="descricao_movimento" class="label">Descrição do Movimento</label>
-                <input type="text" name="descricao_movimento" id="descricao_movimento" class="font-normal input" required>
+                <input type="text" name="descricao_movimento" id="descricao_movimento" class="font-normal input"
+                  required>
               </div>
             </div>
           </div>
@@ -221,13 +251,17 @@
                     </td-->
 
                     <td>
-                      <select name="conta_debito" id="conta_debito" class="font-normal input" required>
+                      <select name="conta_debito" id="conta_debito" class="font-normal input"
+                        required>
                         <option disabled selected>Selcione a conta</option>
-                        <option value="11">11 - Imobilizações Corpóreas</option>
-                        <option value="32">12 - Imobilizações Incorpóreas</option>
-                        <option value="301">21 - Compras</option>
-                        <option value="201">26 - Mercadorias</option>
-                        <option value="401">31 - Clientes</option>
+                        <?php
+                        $get_contas = $conn->prepare("SELECT * FROM conta_principal ORDER BY codigo ASC");
+                        $get_contas->execute();
+                        $contas = $get_contas->fetchAll(PDO::FETCH_ASSOC);
+                        foreach ($contas as $conta): ?>
+                          <option value="<?= $conta['codigo']; ?>"><?= $conta['codigo'] . " - " . $conta['descricao']; ?>
+                          </option>
+                        <?php endforeach; ?>
                       </select>
                     </td>
 
@@ -235,11 +269,11 @@
                       <select name="subconta_lancamento_deb" id="subconta_lancamento" class="font-normal input"
                         required>
                         <option disabled selected>Selcione a subconta</option>
-                        <option value="11">11.1 - Subconta A</option>
+                        <!-- <option value="11">11.1 - Subconta A</option>
                         <option value="32">11.2 - Subconta B</option>
                         <option value="201">11.3 - Subconta C</option>
                         <option value="301">11.4 - Subconta D</option>
-                        <option value="401">11.5 - Subconta E</option>
+                        <option value="401">11.5 - Subconta E</option> -->
                       </select>
                     </td>
 
@@ -290,6 +324,25 @@
   </div>
 
   <script src="../../../../js/scripts.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch('../../../../assets/conf/conf-get-subconta.php')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('subconta_lancamento').innerHTML += data;
+          // document.getElementsByTagName('script')[4].remove();
+          // var s = document.createElement("script");
+          // s.src = "../../../../js/scripts.js";
+          // document.body.appendChild(s);
+          // if (window.lucide) {
+          //   window.lucide.createIcons();
+          // }
+        })
+        .catch(error => {
+          console.error('Erro ao carregar os dados:', error);
+        });
+    });
+  </script>
 
 </body>
 
