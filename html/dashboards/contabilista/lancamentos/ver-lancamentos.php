@@ -6,15 +6,21 @@ session_start();
 }
 require_once '../../../../assets/conf/conf-dbcon.php';
 $empresa_id = isset($_GET['cliente']) ? htmlspecialchars($_GET['cliente']) : null;
+$complemento = $empresa_id ? " AND l.id_empresa = :empresa_id" : "";
 
-$get_lancamentos = $conn->prepare("SELECT li.*, l.data_lancamento, l.lancamento, sc.codigo AS sub_conta_codigo, sc.descricao AS sub_conta_descricao
+$get_lancamentos = $conn->prepare("SELECT li.*, l.data_lancamento, cp.descricao AS conta_principal_descricao, l.lancamento, sc.codigo AS sub_conta_codigo, sc.descricao AS sub_conta_descricao
                                         FROM lancamento_itens li
                                         JOIN lancamentos l ON li.lancamento_id = l.lancamento_id
                                         JOIN sub_conta_2 sc ON li.sub_conta_id = sc.id
+                                        JOIN conta_principal cp ON sc.conta_pai = cp.codigo
                                         JOIN empresas e ON l.empresa_id = e.id_empresa
                                         JOIN usuario u ON l.criador_usuario = u.id
-                                        WHERE u.id = :us
+                                        WHERE u.id = :us $complemento
                                         ORDER BY l.data_lancamento DESC, l.lancamento DESC");
+                                        
+if ($empresa_id)
+  $get_lancamentos->bindParam(':empresa_id', $empresa_id);
+
 $get_lancamentos->bindParam(':us', $_SESSION['us_id']);
 $get_lancamentos->execute();
 $lancamentos = $get_lancamentos->fetchAll(PDO::FETCH_ASSOC);
@@ -183,8 +189,8 @@ $lancamentos = $get_lancamentos->fetchAll(PDO::FETCH_ASSOC);
                   <tr>
                     <td><?php echo date('d/m/Y', strtotime($lancamento['data_lancamento'])); ?></td>
                     <td><?php echo htmlspecialchars($lancamento['lancamento']); ?></td>
-                    <td><?php echo htmlspecialchars(substr($lancamento['sub_conta_codigo'], 0, strpos($lancamento['sub_conta_codigo'], '.'))); ?></td>
-                    <td><?php echo htmlspecialchars($lancamento['sub_conta_codigo']); ?></td>
+                    <td><?php echo htmlspecialchars(substr($lancamento['sub_conta_codigo'], 0, strpos($lancamento['sub_conta_codigo'], '.'))." - ".$lancamento['conta_principal_descricao']); ?></td>
+                    <td><?php echo htmlspecialchars($lancamento['sub_conta_codigo']." - ".$lancamento['sub_conta_descricao']); ?></td>
                     <td><?php echo $lancamento['tipo'] === 'Debito' ? number_format($lancamento['valor'], 2, ',', '.') : '0,00'; ?></td>
                     <td><?php echo $lancamento['tipo'] === 'Credito' ? number_format($lancamento['valor'], 2, ',', '.') : '0,00'; ?></td>
                   </tr>

@@ -1,3 +1,31 @@
+<?php
+require_once '../../../../assets/conf/conf-dbcon.php';
+session_start();
+if (!isset($_SESSION['us_id'])) {
+    header("Location: ../../login.html");
+    exit();
+}
+$empresa_id = isset($_GET['cliente']) ? htmlspecialchars($_GET['cliente']) : null;
+
+$get_empresa = $conn->prepare("SELECT * FROM empresas WHERE id_empresa = :empresa_id LIMIT 1");
+$get_empresa->bindParam(':empresa_id', $empresa_id);
+$get_empresa->execute();
+$empresa = $get_empresa->fetch(PDO::FETCH_ASSOC);
+
+$get_lancamentos = $conn->prepare("SELECT li.*, l.data_lancamento, cp.descricao AS conta_principal_descricao, l.lancamento, sc.codigo AS sub_conta_codigo, sc.descricao AS sub_conta_descricao
+                                        FROM lancamento_itens li
+                                        JOIN lancamentos l ON li.lancamento_id = l.lancamento_id
+                                        JOIN sub_conta_2 sc ON li.sub_conta_id = sc.id
+                                        JOIN conta_principal cp ON sc.conta_pai = cp.codigo
+                                        JOIN empresas e ON l.empresa_id = e.id_empresa
+                                        JOIN usuario u ON l.criador_usuario = u.id
+                                        WHERE l.empresa_id = :empresa_id AND u.id = :us
+");
+$get_lancamentos->bindParam(':empresa_id', $empresa_id);
+$get_lancamentos->bindParam(':us', $_SESSION['us_id']);
+$get_lancamentos->execute();
+$lancamentos = $get_lancamentos->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="en" class="h-full antialiased bg-gray-50">
 
@@ -149,17 +177,17 @@
               <div class="grid grid-cols-1 gap-4 text-sm md:grid-cols-3">
                 <div>
                   <p class="text-gray-500">NIF</p>
-                  <p class="font-medium">123456LA058</p>
+                  <p class="font-medium"><?= htmlspecialchars($empresa['nif']); ?></p>
                 </div>
 
                 <div>
                   <p class="text-gray-500">Nome da Empresa</p>
-                  <p class="font-medium">João da Silva S.A</p>
+                  <p class="font-medium"><?= htmlspecialchars($empresa['nome']); ?></p>
                 </div>
 
                 <div>
                   <p class="text-gray-500">Ano de Análise</p>
-                  <p class="font-medium">2025</p>
+                  <p class="font-medium"><?= htmlspecialchars($_GET['ano']); ?></p>
                 </div>
 
                 <div>
@@ -188,7 +216,7 @@
                     <th>Nº do Movimento</th>
                     <th>Conta Principal</th>
                     <th>Subconta</th>
-                    <th>Conta Associada</th>
+                    <!-- <th>Conta Associada</th> -->
                     <th>Valor Débito</th>
                     <th>Valor Crédito</th>
                     <!-- <th class="text-right ">Ações</th> -->
@@ -196,35 +224,16 @@
                 </thead>
 
                 <tbody class="divide-y divide-gray-200">
+                  <?php foreach ($lancamentos as $lancamento): ?>
                   <tr>
-                    <td>12/04/2023</td>
-                    <td>2</td>
-                    <td>11</td>
-                    <td>11.1</td>
-                    <td>11.1.2</td>
-                    <td>800.00</td>
-                    <td>800.00</td>
+                    <td><?php echo date('d/m/Y', strtotime($lancamento['data_lancamento'])); ?></td>
+                    <td><?php echo htmlspecialchars($lancamento['lancamento']); ?></td>
+                    <td><?php echo htmlspecialchars(substr($lancamento['sub_conta_codigo'], 0, strpos($lancamento['sub_conta_codigo'], '.'))." - ".$lancamento['conta_principal_descricao']); ?></td>
+                    <td><?php echo htmlspecialchars($lancamento['sub_conta_codigo']." - ".$lancamento['sub_conta_descricao']); ?></td>
+                    <td><?php echo $lancamento['tipo'] === 'Debito' ? number_format($lancamento['valor'], 2, ',', '.') : '0,00'; ?></td>
+                    <td><?php echo $lancamento['tipo'] === 'Credito' ? number_format($lancamento['valor'], 2, ',', '.') : '0,00'; ?></td>
                   </tr>
-
-                  <tr>
-                    <td>12/04/2023</td>
-                    <td>3</td>
-                    <td>12</td>
-                    <td>12.1</td>
-                    <td>12.1.3</td>
-                    <td>800.00</td>
-                    <td>800.00</td>
-                  </tr>
-
-                  <tr>
-                    <td>12/04/2023</td>
-                    <td>4</td>
-                    <td>13</td>
-                    <td>13.4</td>
-                    <td>13.4.1</td>
-                    <td>800.00</td>
-                    <td>800.00</td>
-                  </tr>
+                <?php endforeach; ?>
                 </tbody>
               </table>
             </div>

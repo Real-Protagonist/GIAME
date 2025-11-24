@@ -914,10 +914,14 @@ window.addEventListener('DOMContentLoaded', function () {
 const selectAno = document.getElementById('anoAnalise');
 const secaoAccoes = document.getElementById('accoes');
 const anc = document.getElementById('link-lance');
+const ancDia = document.getElementById('link-diario');
+
 
 if (selectAno && secaoAccoes) {
   selectAno.addEventListener('change', () => {
     anc.href = `../lancamentos/criar-lancamentos?cliente=${empresa_id}&ano=${selectAno.value}`;
+    ancDia.href = `../lancamentos/diario-consulta?cliente=${empresa_id}&ano=${selectAno.value}`;
+    
     if (selectAno.value) {
       secaoAccoes.classList.remove('hidden');
     } else {
