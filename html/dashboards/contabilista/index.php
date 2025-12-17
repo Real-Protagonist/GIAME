@@ -10,6 +10,22 @@
   $stmt->bindParam(':email', $user_id);
   $stmt->execute();
   $result = $stmt->fetchAll();
+
+  $stmt = $conn->prepare('SELECT COUNT(*) AS total_clients FROM empresas');
+  $stmt->execute();
+  $total_clients = $stmt->fetchColumn();
+
+  $stmt = $conn->prepare('SELECT COUNT(*) AS total_companies FROM empresas WHERE tamanho = "Média"');
+  $stmt->execute();
+  $total_medias = $stmt->fetchColumn();
+
+  $stmt = $conn->prepare('SELECT COUNT(*) AS total_companies FROM empresas WHERE tamanho = "Grande"');
+  $stmt->execute();
+  $total_grandes = $stmt->fetchColumn();
+
+  $stmt = $conn->prepare('SELECT COUNT(*) AS total_companies FROM empresas WHERE tamanho = "Pequena"');
+  $stmt->execute();
+  $total_pequenas = $stmt->fetchColumn();
 ?>
 <!DOCTYPE html>
 <html lang="en" class="h-full antialiased bg-gray-50">
@@ -54,7 +70,7 @@
         <nav class="p-4">
 
           <!-- Item direto: Dashboard -->
-          <a href="index.html" class="sidebar-link">
+          <a href="index" class="sidebar-link">
             <i data-lucide="layout-dashboard" class="w-5 h-5 collapsibble-menu-icons"></i>
             Dashboard
           </a>
@@ -72,7 +88,7 @@
 
             <div class="mt-1 collapsible-content">
               <div class="pl-4 space-y-1 border-l-2">
-                <a href="clientes/ver-clientes.html" class="sidebar-subitem">
+                <a href="clientes/ver-clientes" class="sidebar-subitem">
                   <i data-lucide="users" class="w-4 h-4"></i> Ver clientes
                 </a>
                 <a href="clientes/adicionar-cliente.html" class="sidebar-subitem">
@@ -109,10 +125,10 @@
             <i data-lucide="calendar-search" class="w-4 h-4"></i> Diário de consulta
           </a-->
 
-          <a href="../admin/index.html" class="sidebar-link">
+          <!-- <a href="../admin/index.html" class="sidebar-link">
             <i data-lucide="layout-dashboard" class="w-5 h-5 collapsibble-menu-icons"></i>
             Dashboard Admin
-          </a>
+          </a> -->
         </nav>
       </div>
     </aside>
@@ -139,7 +155,7 @@
           <!-- Cards -->
           <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
             <!-- Clientes Cadastrados-->
-            <div class="p-6 transition-all bg-white border border-gray-200 shadow-sm rounded-2xl hover:shadow-md group">
+            <!-- <div class="p-6 transition-all bg-white border border-gray-200 shadow-sm rounded-2xl hover:shadow-md group">
               <div class="flex items-center justify-between mb-4">
                 <div class="bg-primary/10 text-primary p-2.5 rounded-xl group-hover:scale-105 transition">
                   <i data-lucide="users" class="w-5 h-5"></i>
@@ -155,7 +171,7 @@
                 <p>Empresas: <strong>3</strong></p>
               </div>
               <p class="mt-2 text-xs text-gray-400">Última atualização: há 2h</p>
-            </div>
+            </div> -->
 
             <!-- Sector de Empresas  -->
             <div class="p-6 transition-all bg-white border border-gray-200 shadow-sm rounded-2xl hover:shadow-md group">
@@ -169,7 +185,7 @@
                 </a>
               </div>
               <p class="text-gray-500">Sector de Empresas</p>
-              <h2 class="mt-1 text-xl font-semibold text-secondary">3</h2>
+              <h2 class="mt-1 text-xl font-semibold text-secondary"><?= $total_clients ?></h2>
               <p class="mt-2 text-xs text-gray-400">Última atualização: hoje</p>
             </div>
 
@@ -182,9 +198,9 @@
               </div>
               <p class="text-gray-500">Tipos de Empresas</p>
               <div class="grid grid-cols-3 mt-2 text-sm text-gray-700 gap-y-1">
-                <p>Pequenas: <strong>1</strong></p>
-                <p>Médias: <strong>2</strong></p>
-                <p>Grandes: <strong>0</strong></p>
+                <p>Pequenas: <strong><?= $total_pequenas ?></strong></p>
+                <p>Médias: <strong><?= $total_medias ?></strong></p>
+                <p>Grandes: <strong><?= $total_grandes ?></strong></p>
               </div>
               <p class="mt-2 text-xs text-gray-400">Última atualização: ontem</p>
             </div>

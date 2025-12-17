@@ -217,7 +217,7 @@ INSERT INTO `plano_contas` (codigo, descricao, nivel, conta_pai) VALUES
 ('1.1', 'Ativo Circulante', 2, 1),
 ('1.1.1', 'Caixa e Equivalentes de Caixa', 3, 1.1);
 
-select * from conta_principal;
+select * from empresas;
 INSERT INTO `conta_principal` (`codigo`, `descricao`, `nivel`) VALUES
     (11, 'IMOBILIZAÇÕES CORPÓREAS', '1'),
     (12, 'IMOBILIZAÇÕES INCORPÓREAS', '1'),

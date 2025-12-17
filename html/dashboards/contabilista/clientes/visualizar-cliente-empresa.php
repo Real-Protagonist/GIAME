@@ -79,7 +79,7 @@ $socios = $get_socios->fetchAll(PDO::FETCH_ASSOC);
       <div class="flex-1 overflow-y-auto">
         <nav class="p-4">
           <!-- Item direto: Dashboard -->
-          <a href="../index.html" class="sidebar-link">
+          <a href="../index" class="sidebar-link">
             <i data-lucide="layout-dashboard" class="w-5 h-5 collapsibble-menu-icons"></i>
             Dashboard
           </a>
@@ -134,10 +134,10 @@ $socios = $get_socios->fetchAll(PDO::FETCH_ASSOC);
             <i data-lucide="calendar-search" class="w-4 h-4"></i> Diário de consulta
           </a -->
 
-          <a href="../../admin/index.html" class="sidebar-link">
+          <!-- <a href="../../admin/index.html" class="sidebar-link">
             <i data-lucide="layout-dashboard" class="w-5 h-5 collapsibble-menu-icons"></i>
             Dashboard Admin
-          </a>
+          </a> -->
         </nav>
       </div>
     </aside>

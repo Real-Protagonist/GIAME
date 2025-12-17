@@ -106,7 +106,7 @@
 
         const result = await response.json();
         if (response.ok && result.message)
-          window.location.href = '../dashboards/admin/index.html'; // Redireciona para a página inicial
+          window.location.href = '../dashboards/contabilista/index'; // Redireciona para a página inicial
         else
           showAlert(result.error || 'Credenciais inválidas.', 'error');
       } catch (error) {

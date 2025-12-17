@@ -6,7 +6,7 @@ session_start();
 }
 require_once '../../../../assets/conf/conf-dbcon.php';
 $empresa_id = isset($_GET['cliente']) ? htmlspecialchars($_GET['cliente']) : null;
-$complemento = $empresa_id ? " AND l.id_empresa = :empresa_id" : "";
+$complemento = $empresa_id ? " AND l.empresa_id = :empresa_id" : "";
 
 $get_lancamentos = $conn->prepare("SELECT li.*, l.data_lancamento, cp.descricao AS conta_principal_descricao, l.lancamento, sc.codigo AS sub_conta_codigo, sc.descricao AS sub_conta_descricao
                                         FROM lancamento_itens li
@@ -67,7 +67,7 @@ $lancamentos = $get_lancamentos->fetchAll(PDO::FETCH_ASSOC);
       <div class="flex-1 overflow-y-auto">
         <nav class="p-4">
           <!-- Item direto: Dashboard -->
-          <a href="../index.html" class="sidebar-link">
+          <a href="../index" class="sidebar-link">
             <i data-lucide="layout-dashboard" class="w-5 h-5 collapsibble-menu-icons"></i>
             Dashboard
           </a>
@@ -122,10 +122,10 @@ $lancamentos = $get_lancamentos->fetchAll(PDO::FETCH_ASSOC);
             <i data-lucide="calendar-search" class="w-4 h-4"></i> Diário de consulta
           </a-->
 
-          <a href="../../admin/index.html" class="sidebar-link">
+          <!-- <a href="../../admin/index.html" class="sidebar-link">
             <i data-lucide="layout-dashboard" class="w-5 h-5 collapsibble-menu-icons"></i>
             Dashboard Admin
-          </a>
+          </a> -->
         </nav>
       </div>
     </aside>
