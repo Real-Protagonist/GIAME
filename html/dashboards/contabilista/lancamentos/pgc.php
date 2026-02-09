@@ -1,3 +1,20 @@
+<?php
+  session_start();
+  if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../../../login.html");
+    session_destroy();
+    session_abort();
+    session_unset();
+    exit();
+  }
+
+  include "../../../../assets/conf/conf-dbcon.php";
+  // include "../../../../assets/conf/conf-register.php";
+  $get = $conn->prepare("SELECT * FROM conta_principal");
+  $get->execute();
+  $contas = $get->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="en" class="h-full antialiased bg-gray-50">
 <style media="screen">
@@ -141,7 +158,25 @@
                 </thead>
 
                 <tbody class="divide-y divide-gray-200">
-                  <tr>
+                  <?php foreach ($contas as $conta): ?>
+                    <tr>
+                      <th><?= htmlspecialchars($conta['codigo']) ?></th>
+                      <th><?= htmlspecialchars($conta['descricao']) ?></th>
+                    </tr>
+                    
+                    <?php
+                    $get_sub = $conn->prepare("SELECT * FROM sub_conta_2 WHERE conta_pai = :conta_id");
+                    $get_sub->bindParam(':conta_id', $conta['codigo']);
+                    $get_sub->execute();
+                    $sub_contas = $get_sub->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($sub_contas as $sub_conta): ?>
+                      <tr>
+                        <td class="positionr"><?= htmlspecialchars($sub_conta['codigo']) ?></td>
+                        <td class="positionl"><?= htmlspecialchars($sub_conta['descricao']) ?></td>
+                      </tr>
+                      <?php endforeach; ?>
+                  <?php endforeach; ?>
+                  <!-- <tr>
                     <th>11</th>
                     <th>IMOBILIZAÇÕES CORPÓREAS</th>
                   </tr>
@@ -199,7 +234,7 @@
                   <tr>
                     <th>14</th>
                     <th>IMOBILIZAÇÕES EM CURSO</th>
-                  </tr>
+                  </tr> -->
 
                 </tbody>
               </table>
