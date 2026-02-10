@@ -1,3 +1,18 @@
+<?php
+  session_start();
+  if (!isset($_SESSION['user_id'])) {
+    header("Location: ../../../../login.html");
+    session_destroy();
+    session_abort();
+    session_unset();
+    exit();
+  }
+  include "../../../../assets/conf/conf-dbcon.php";
+  
+  $get = $conn->prepare("SELECT * FROM conta_principal");
+  $get->execute();
+  $contas = $get->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
 <html lang="en" class="h-full antialiased bg-gray-50">
 
@@ -144,9 +159,15 @@
                   <label for="contaPrincipal" class="label">Conta principal</label>
                   <select id="contaPrincipal" name="contaPrincipal" required class="input">
                     <option value="" disabled selected>Selecione a conta principal</option>
+                    <?php foreach ($contas as $conta): ?>
+                      <option value="<?= htmlspecialchars($conta['codigo']) ?>">
+                        <?= htmlspecialchars($conta['codigo']) ?> - <?= htmlspecialchars($conta['descricao']) ?>
+                      </option>
+                    <?php endforeach; ?>
+                    <!-- <option value="" disabled selected>Selecione a conta principal</option>
                     <option value="32">32 - Fornecedores</option>
                     <option value="43">43 - Depósito à ordem</option>
-                    <option value="44">44 - Outros depósitos</option>
+                    <option value="44">44 - Outros depósitos</option> -->
                   </select>
                 </div>
 
@@ -155,9 +176,9 @@
                   <label for="subConta" class="label">Subconta</label>
                   <select id="subConta" name="subConta" required class="input">
                     <option value="" disabled selected>Selecione a subconta</option>
-                    <option value="32">32.1 - Fornecedores xyz</option>
+                    <!-- <option value="32">32.1 - Fornecedores xyz</option>
                     <option value="43">43.2 - Depósito à ordem xyz</option>
-                    <option value="44">44.1 - Outros depósitos xyz</option>
+                    <option value="44">44.1 - Outros depósitos xyz</option> -->
                   </select>
                 </div>
 
@@ -203,7 +224,36 @@
   </div>
 
 
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script src="../../../../js/scripts.js"></script>
+  <script>
+    var conta = "";
+
+    // function printOpt() {
+    //   console.log(conta);
+    //   $.ajax({
+    //     url: '../../../../assets/conf/get-sub-conta.php',
+    //     method: 'POST',
+    //     data: { contaPrincipal: conta },
+    //     success: function(response) {
+    //       document.getElementById('subConta').innerHTML = response;
+    //     },
+    //   });
+    // }
+    document.getElementById('contaPrincipal').onclick = function() {
+      conta = this.value;
+      // printOpt();
+      $.ajax({
+        url: '../../../../assets/conf/get-sub-conta.php',
+        method: 'POST',
+        data: { contaPrincipal: conta },
+        success: function(response) {
+          document.getElementById('subConta').innerHTML = response;
+        },
+      });
+
+    };
+  </script>
 </body>
 
 </html>
