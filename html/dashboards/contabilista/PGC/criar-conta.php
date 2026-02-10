@@ -253,6 +253,20 @@
       });
 
     };
+
+    document.getElementById('tipoConta').onclick = function() {
+      var tipo = this.value;
+      if (tipo === "Principal") {
+        document.getElementById('contaPrincipal').disabled = true;
+        document.getElementById('subConta').disabled = true;
+      } else if (tipo === "Subconta") {
+        document.getElementById('contaPrincipal').disabled = false;
+        document.getElementById('subConta').disabled = true;
+      } else if (tipo === "Conta associada") {
+        document.getElementById('contaPrincipal').disabled = false;
+        document.getElementById('subConta').disabled = false;
+      }
+    }
   </script>
 </body>
 
