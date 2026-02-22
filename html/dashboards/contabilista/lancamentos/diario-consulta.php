@@ -2,9 +2,10 @@
 require_once '../../../../assets/conf/conf-dbcon.php';
 session_start();
 if (!isset($_SESSION['us_id'])) {
-    header("Location: ../../login.html");
-    exit();
+  header("Location: ../../login.html");
+  exit();
 }
+setlocale(LC_ALL, 'pt_PT.UTF-8');
 $empresa_id = isset($_GET['cliente']) ? htmlspecialchars($_GET['cliente']) : null;
 
 $get_empresa = $conn->prepare("SELECT * FROM empresas WHERE id_empresa = :empresa_id LIMIT 1");
@@ -192,12 +193,12 @@ $lancamentos = $get_lancamentos->fetchAll(PDO::FETCH_ASSOC);
 
                 <div>
                   <p class="text-gray-500">Total de Débito</p>
-                  <p class="font-medium">2400.00 KZ</p>
+                  <p class="font-medium"><?= number_format(2400.00, 2, ',', '.') ?> KZ</p>
                 </div>
 
                 <div>
                   <p class="text-gray-500">Total de Crédito</p>
-                  <p class="font-medium">2400.00 KZ</p>
+                  <p class="font-medium"><?= number_format(2400.00, 2, ',', '.') ?> KZ</p>
                 </div>
               </div>
             </div>
@@ -225,19 +226,106 @@ $lancamentos = $get_lancamentos->fetchAll(PDO::FETCH_ASSOC);
 
                 <tbody class="divide-y divide-gray-200">
                   <?php foreach ($lancamentos as $lancamento): ?>
-                  <tr>
-                    <td><?php echo date('d/m/Y', strtotime($lancamento['data_lancamento'])); ?></td>
-                    <td><?php echo htmlspecialchars($lancamento['lancamento']); ?></td>
-                    <td><?php echo htmlspecialchars(substr($lancamento['sub_conta_codigo'], 0, strpos($lancamento['sub_conta_codigo'], '.'))." - ".$lancamento['conta_principal_descricao']); ?></td>
-                    <td><?php echo htmlspecialchars($lancamento['sub_conta_codigo']." - ".$lancamento['sub_conta_descricao']); ?></td>
-                    <td><?php echo $lancamento['tipo'] === 'Debito' ? number_format($lancamento['valor'], 2, ',', '.') : '0,00'; ?></td>
-                    <td><?php echo $lancamento['tipo'] === 'Credito' ? number_format($lancamento['valor'], 2, ',', '.') : '0,00'; ?></td>
-                  </tr>
-                <?php endforeach; ?>
+                    <tr>
+                      <td><?php echo date('d/m/Y', strtotime($lancamento['data_lancamento'])); ?></td>
+                      <td><?php echo htmlspecialchars($lancamento['lancamento']); ?></td>
+                      <td>
+                        <?php echo htmlspecialchars(substr($lancamento['sub_conta_codigo'], 0, strpos($lancamento['sub_conta_codigo'], '.')) . " - " . $lancamento['conta_principal_descricao']); ?>
+                      </td>
+                      <td>
+                        <?php echo htmlspecialchars($lancamento['sub_conta_codigo'] . " - " . $lancamento['sub_conta_descricao']); ?>
+                      </td>
+                      <td>
+                        <?php echo $lancamento['tipo'] === 'Debito' ? number_format($lancamento['valor'], 2, ',', '.') : '0,00'; ?>
+                      </td>
+                      <td>
+                        <?php echo $lancamento['tipo'] === 'Credito' ? number_format($lancamento['valor'], 2, ',', '.') : '0,00'; ?>
+                      </td>
+                    </tr>
+                  <?php endforeach; ?>
+
+                  <div id="add-new">
+                    <!-- <tr>
+                      <td>
+                        <input type="date" id="data-lancamento" name="data-lancamento" required
+                          class="input" />
+                      </td>
+                      <td>
+                        <input type="number" step="1000" id="numero-lancamento" name="numero-lancamento"
+                          placeholder="Insira o número do lançamento" class="input" />
+                      </td>
+                      <td>
+                        <select id="conta-principal" name="contaPrincipal" required class="input">
+                          <option value="" disabled selected>Selecione a conta principal</option>
+                          <option value="Luanda">Luanda</option>
+                          <option value="Benguela">Benguela</option>
+                          <option value="Huambo">Huambo</option>
+                          <option value="Bié">Bié</option>
+                          <option value="Cabinda">Cabinda</option>
+                          <option value="Cunene">Cunene</option>
+                          <option value="Huíla">Huíla</option>
+                          <option value="Malanje">Malanje</option>
+                          <option value="Namibe">Namibe</option>
+                          <option value="Uíge">Uíge</option>
+                          <option value="Zaire">Zaire</option>
+                          <option value="Lunda Norte">Lunda Norte</option>
+                          <option value="Lunda Sul">Lunda Sul</option>
+                          <option value="Moxico">Moxico</option>
+                          <option value="Cuando Cubango">Cuando Cubango</option>
+                          <option value="Cuanza Norte">Cuanza Norte</option>
+                          <option value="Cuanza Sul">Cuanza Sul</option>
+                          <option value="Bengo">Bengo</option>
+                        </select>
+                      </td>
+                      <td>
+                        <select id="subconta" name="subconta" required class="input">
+                          <option value="" disabled selected>Selecione a subconta</option>
+                          <option value="Luanda">Luanda</option>
+                          <option value="Benguela">Benguela</option>
+                          <option value="Huambo">Huambo</option>
+                          <option value="Bié">Bié</option>
+                          <option value="Cabinda">Cabinda</option>
+                          <option value="Cunene">Cunene</option>
+                          <option value="Huíla">Huíla</option>
+                          <option value="Malanje">Malanje</option>
+                          <option value="Namibe">Namibe</option>
+                          <option value="Uíge">Uíge</option>
+                          <option value="Zaire">Zaire</option>
+                          <option value="Lunda Norte">Lunda Norte</option>
+                          <option value="Lunda Sul">Lunda Sul</option>
+                          <option value="Moxico">Moxico</option>
+                          <option value="Cuando Cubango">Cuando Cubango</option>
+                          <option value="Cuanza Norte">Cuanza Norte</option>
+                          <option value="Cuanza Sul">Cuanza Sul</option>
+                          <option value="Bengo">Bengo</option>
+                        </select>
+                      </td>
+                      <td>
+                        <input type="number" step="1000" id="valor-debito" name="valorDebito"
+                          placeholder="Insira o valor do débito" class="input" />
+                      </td>
+                      <td>
+                        <input type="number" step="1000" id="valor-credito" name="valorCredito"
+                          placeholder="Insira o valor do crédito" class="input" />
+                      </td>
+                    </tr> -->
+                  </div>
                 </tbody>
               </table>
             </div>
           </div>
+          <!-- Botões -->
+              <section class="flex justify-end gap-3">
+                <button onclick="window.location.href = 'criar-lancamentos?cliente=<?= htmlspecialchars($empresa_id); ?>&ano=<?= htmlspecialchars($_GET['ano']); ?>';"
+                  class="px-4 py-2 text-sm text-white rounded-lg bg-secondary hover:bg-opacity-90">
+                  Novo Lançamento
+                </button>
+
+                <!-- <button
+                  class="px-4 py-2 text-sm text-white rounded-lg bg-primary hover:bg-opacity-90">
+                  Gravar
+                </button> -->
+              </section>
         </div>
       </main>
     </div>
@@ -248,6 +336,22 @@ $lancamentos = $get_lancamentos->fetchAll(PDO::FETCH_ASSOC);
   </div>
 
   <script src="../../../../js/scripts.js"></script>
+  <!-- <script>
+    document.getElementsByClassName('bg-primary')[1].addEventListener('click', () => {
+      console.log("Botão de Gravar clicado");
+      FormData dataF = new FormData();
+
+      dataF.append('data', document.getElementById('data-de-constituicao').value);
+      dataF.append('valor', document.getElementById('numero-lancamento').value);
+      dataF.append('contaPrincipal', document.getElementById('conta-principal').value);
+      dataF.append('subconta', document.getElementById('subconta').value);
+      dataF.append('valorDebito', document.getElementById('valor-debito').value);
+      dataF.append('valorCredito', document.getElementById('valor-credito').value);
+      fetch('../../../../assets/conf/conf-criar-lancamento.php', {
+        method: 'POST',
+        body: dataF
+    });
+  </script> -->
 </body>
 
 </html>

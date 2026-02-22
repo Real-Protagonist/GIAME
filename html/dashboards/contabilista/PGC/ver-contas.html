@@ -396,6 +396,20 @@
   </div>
 
   <script src="../../../../js/scripts.js"></script>
+    <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      $.ajax({
+        url: 'fetch_contas.php',
+        method: 'GET',
+        success: function (data) {
+          $('#content-tab1 tbody').html(data);
+        },
+        error: function (xhr, status, error) {
+          console.error('Erro ao carregar contas:', error);
+        }
+      });
+    });
+  </script>
 </body>
 
 </html>

@@ -142,7 +142,7 @@
           <div class="flex justify-center px-4">
             <div class="w-full max-w-3xl p-10 bg-white border rounded-2xl">
               <form class="w-full gap-6 form-grid form-col-2" id="form-submit" data-id="criarConta" data-title="Conta Criada!"
-                data-msg="A Conta foi Criada com sucesso." method="post" data-redirect="ver-contas.html">
+                data-msg="A Conta foi Criada com sucesso." method="post" data-redirect="pgc">
                 <!-- Tipo de conta -->
                 <div class="form-full">
                   <label for="tipoConta" class="label">Tipo de conta</label>
@@ -229,18 +229,6 @@
   <script src="../../../../js/scripts.js"></script>
   <script>
     var conta = "";
-
-    // function printOpt() {
-    //   console.log(conta);
-    //   $.ajax({
-    //     url: '../../../../assets/conf/get-sub-conta.php',
-    //     method: 'POST',
-    //     data: { contaPrincipal: conta },
-    //     success: function(response) {
-    //       document.getElementById('subConta').innerHTML = response;
-    //     },
-    //   });
-    // }
     document.getElementById('contaPrincipal').onclick = function() {
       conta = this.value;
       // printOpt();
@@ -252,7 +240,6 @@
           document.getElementById('subConta').innerHTML = response;
         },
       });
-
     };
 
     document.getElementById('tipoConta').onclick = function() {

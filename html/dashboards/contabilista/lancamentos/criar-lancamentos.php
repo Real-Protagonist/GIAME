@@ -251,7 +251,7 @@ $next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancament
                     </td-->
 
                     <td>
-                      <select name="conta_debito" id="conta_debito" class="font-normal input"
+                      <select name="conta_principal" id="conta_principal" class="font-normal input"
                         required>
                         <option disabled selected>Selcione a conta</option>
                         <?php
@@ -323,27 +323,42 @@ $next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancament
   <div id="mobile-overlay" class="fixed inset-0 z-40 hidden transition-opacity duration-300 bg-black/50 md:hidden">
   </div>
 
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script src="../../../../js/scripts.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      fetch('../../../../assets/conf/conf-get-subconta.php')
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('subconta_lancamento').innerHTML += data;
-          // document.getElementsByTagName('script')[4].remove();
-          // var s = document.createElement("script");
-          // s.src = "../../../../js/scripts.js";
-          // document.body.appendChild(s);
-          // if (window.lucide) {
-          //   window.lucide.createIcons();
-          // }
-        })
-        .catch(error => {
-          console.error('Erro ao carregar os dados:', error);
-        });
-    });
-  </script>
+    // document.addEventListener("DOMContentLoaded", function () {
+    //   fetch('../../../../assets/conf/conf-get-subconta.php')
+    //     .then(response => response.text())
+    //     .then(data => {
+    //       document.getElementById('subconta_lancamento').innerHTML += data;
+    //       // document.getElementsByTagName('script')[4].remove();
+    //       // var s = document.createElement("script");
+    //       // s.src = "../../../../js/scripts.js";
+    //       // document.body.appendChild(s);
+    //       // if (window.lucide) {
+    //       //   window.lucide.createIcons();
+    //       // }
+    //     })
+    //     .catch(error => {
+    //       console.error('Erro ao carregar os dados:', error);
+    //     });
+    // });
 
+    var conta = "";
+    document.getElementById('conta_principal').onclick = function() {
+      console.log("Conta principal selecionada: ", this.value);
+      conta = this.value;
+      // printOpt();
+      $.ajax({
+        url: '../../../../assets/conf/get-sub-conta.php',
+        method: 'POST',
+        data: { contaPrincipal: conta },
+        success: function(response) {
+          document.getElementById('subconta_lancamento').innerHTML = response;
+        },
+      });
+    };
+  </script>
 </body>
 
 </html>
