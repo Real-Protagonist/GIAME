@@ -604,7 +604,30 @@ async function enviarLancamento(dadosFormulario, linhasLancamento) {
   }
 }
 
+async function criarConta(dadosFormulario) {
+  const contaData = {
+    numero_conta: document.getElementById('numero_conta')?.value || '',
+    descricao: document.getElementById('nome_conta')?.value || '',
+    contaPrincipal: document.getElementById('contaPrincipal')?.value || '',
+    subConta: document.getElementById('subConta')?.value || '',
+    tipoConta: document.getElementById('tipoConta')?.value || ''
+  }
 
+  try {
+    const response = await fetch('../../../../assets/conf/conf-criar-conta.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(contaData)
+    });
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    // console.error('Erro ao criar conta: ', error);
+    return { error: true, message: 'Erro de Conexão' };
+  }
+}
 
 
 // ==========================
@@ -849,9 +872,22 @@ if (form) {
 
       const linhasLancamento = coletarDadosLancamento();
       const result = await enviarLancamento(dadosFormulario, linhasLancamento);
-      // console.log("Dados do lançamento: ", dadosFormulario);
-      // console.log("Linhas do lançamento: ", linhasLancamento);
 
+      if (result.error === false) {
+        vf = 1;
+      } else if (result === null) {
+        vf = 0;
+      }
+    }
+
+    if (id === "criarConta") {
+      // Lógica para criar conta (similar ao cadastroCliente, mas pode ser outro endpoint)
+      const formData = new FormData(this);
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = value;
+      });
+      const result = await criarConta(data);
       if (result.error === false) {
         vf = 1;
       } else if (result === null) {
@@ -955,7 +991,6 @@ function subConta(select) {
   })
     .then(response => response.text())
     .then(data => {
-      console.log("data");
       document.getElementById('subconta_lancamento').innerHTML += data;
       // document.getElementById('sub-c').innerText += `
       // <select name="subconta_lancamento_deb" id="subconta_lancamento" class="font-normal input" required>

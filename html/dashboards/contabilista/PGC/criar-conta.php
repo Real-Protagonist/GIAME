@@ -141,8 +141,8 @@
 
           <div class="flex justify-center px-4">
             <div class="w-full max-w-3xl p-10 bg-white border rounded-2xl">
-              <form class="w-full gap-6 form-grid form-col-2" id="form-submit" data-title="Conta Criada!"
-                data-msg="A Conta foi Criada com sucesso." data-redirect="ver-contas.html">
+              <form class="w-full gap-6 form-grid form-col-2" id="form-submit" data-id="criarConta" data-title="Conta Criada!"
+                data-msg="A Conta foi Criada com sucesso." method="post" data-redirect="ver-contas.html">
                 <!-- Tipo de conta -->
                 <div class="form-full">
                   <label for="tipoConta" class="label">Tipo de conta</label>
@@ -224,6 +224,7 @@
   </div>
 
 
+  <!-- <script src="../../../../js/scripts.js"></script> -->
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script src="../../../../js/scripts.js"></script>
   <script>
