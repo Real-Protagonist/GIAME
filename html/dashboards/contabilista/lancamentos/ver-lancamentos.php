@@ -155,7 +155,7 @@ $lancamentos = $get_lancamentos->fetchAll(PDO::FETCH_ASSOC);
                 <span class="absolute inset-y-0 flex items-center text-gray-400 left-3">
                   <i data-lucide="search" class="w-4 h-4"></i>
                 </span>
-                <input type="text" placeholder="Pesquisar lançamentos..."
+                <input type="text" placeholder="Pesquisar lançamentos..." id="ver-lancamentos"
                   class="w-full px-10 py-2 text-sm transition-all duration-200 ease-in-out border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:outline-none" />
               </div>
 
@@ -209,6 +209,18 @@ $lancamentos = $get_lancamentos->fetchAll(PDO::FETCH_ASSOC);
   </div>
 
   <script src="../../../../js/scripts.js"></script>
+  <script>
+    // Inicializar a funcionalidade de pesquisa
+    document.getElementById('ver-lancamentos').addEventListener('input', function() {
+      const query = this.value.toLowerCase();
+      const rows = document.querySelectorAll('table tbody tr');
+
+      rows.forEach(row => {
+        const rowText = row.textContent.toLowerCase();
+        row.style.display = rowText.includes(query) ? '' : 'none';
+      });
+    });
+</script>
 </body>
 
 </html>
