@@ -520,6 +520,7 @@ if (listaSocios) {
   });
 }
 
+var linhaN = 1;
 
 // ==========================
 // ADICIONAR LINHAS
@@ -550,7 +551,13 @@ function AdicionarLinha() {
   AdicionarEventosDeInputNaLinha(novaLinha);
 
   tbody.appendChild(novaLinha);
-  console.log("Linha adicionada: ", novaLinha);
+  linhaN++;
+  novaLinha.id = "linha_" + linhaN;
+
+// console.log("ID da nova linha: ",novaLinha.children[0]);
+// console.log("ds" + novaLinha.children[linhaN - 1].children[0].getAttribute("onchange"));
+novaLinha.children[0].children[0].setAttribute("onchange", "selectConta(this.value, '" + novaLinha.id + "')");
+  // console.log("Linha adicionada: ", novaLinha);
 }
 
 function coletarDadosLancamento() {
@@ -671,19 +678,19 @@ function AtualizarTotais() {
   const btnRegistrar = document.querySelector('#btn-registrar');
 
   if (inputTotalDebito && inputTotalCredito) {
-    inputTotalDebito.value = totalDebito.toFixed(2);
-    inputTotalCredito.value = totalCredito.toFixed(2);
+    inputTotalDebito.value = totalDebito.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    inputTotalCredito.value = totalCredito.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   // Calcular diferença
   const diferenca = totalDebito - totalCredito;
   if (inputDiferenca) {
-    inputDiferenca.value = diferenca.toFixed(2);
+    inputDiferenca.value = diferenca.toFixed(2).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   // Habilitar/desabilitar botão
   if (btnRegistrar) {
-    if (diferenca === 0) {
+    if (diferenca != 0) {
       btnRegistrar.disabled = true;
       btnRegistrar.classList.add("opacity-50", "cursor-not-allowed");
       btnRegistrar.classList.remove("hover:bg-opacity-90");

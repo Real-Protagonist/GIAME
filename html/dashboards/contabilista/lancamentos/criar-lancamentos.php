@@ -202,7 +202,7 @@ $next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancament
 
               <div>
                 <label for="data_movimento" class="label">Data do Movimento</label>
-                <input type="date" name="data_movimento" id="data_movimento" class="font-normal input" required>
+                <input type="date" name="data_movimento" id="data_movimento" value="<?= date('Y-m-d') ?>" class="font-normal input" required>
               </div>
 
               <div>
@@ -244,14 +244,14 @@ $next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancament
                 </thead>
 
                 <tbody class="divide-y divide-gray-200">
-                  <tr>
+                  <tr id="linha_1">
                     <!--td>
                       <input type="number" name="numero_movimento" id="numero_movimento"
                         class="font-normal input placeholder:font-normal" placeholder="Nº do movimento" required>
                     </td-->
 
                     <td>
-                      <select name="conta_principal" id="conta_principal" class="font-normal input"
+                      <select name="conta_principal" id="conta_principal" class="font-normal input" onchange="selectConta(this.value, 'linha_1')"
                         required>
                         <option disabled selected>Selcione a conta</option>
                         <?php
@@ -266,7 +266,7 @@ $next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancament
                     </td>
 
                     <td>
-                      <select name="subconta_lancamento_deb" id="subconta_lancamento" class="font-normal input"
+                      <select name="subconta_lancamento_deb" id="subconta_lancamento" class="font-normal input sub-linha"
                         required>
                         <option disabled selected>Selcione a subconta</option>
                         <!-- <option value="11">11.1 - Subconta A</option>
@@ -344,20 +344,39 @@ $next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancament
     //     });
     // });
 
-    var conta = "";
-    document.getElementById('conta_principal').onclick = function() {
-      console.log("Conta principal selecionada: ", this.value);
-      conta = this.value;
+    function selectConta(conta, elemento) {
+      console.log("Conta principal selecionada: ", elemento);
+      // console.log("Com querySelector: ",document.getElementById(elemento.closest('tr').id).querySelector('select[name="subconta_lancamento"]'));
+      // console.log("Elemento selecionado: ", document.getElementById(elemento.closest('tr').id));
+      // console.log("Elemento selecionado: ", document.getElementById(elemento.closest('tr').id).children[1].children[0].id);
+      // console.log("ID do elemento selecionado: ", document.getElementById('linha_1').id);
       // printOpt();
       $.ajax({
         url: '../../../../assets/conf/get-sub-conta.php',
         method: 'POST',
         data: { contaPrincipal: conta },
         success: function(response) {
-          document.getElementById('subconta_lancamento').innerHTML = response;
+          // document.getElementById('subconta_lancamento').innerHTML = response;
+          document.getElementById(elemento).children[1].children[0].innerHTML = response;
+          // document.getElementById(document.getElementById(elemento.closest('tr').id).children[1].children[0].id).innerHTML = response;
+          // document.querySelector('#' + document.getElementById(elemento.closest('tr').id).children[1].children[0].className.split(' ')[1]).innerHTML = response;
         },
       });
-    };
+    }
+    // var conta = "";
+    // document.getElementById('conta_principal').onclick = function() {
+    //   console.log("Conta principal selecionada: ", this.value);
+    //   conta = this.value;
+    //   // printOpt();
+    //   $.ajax({
+    //     url: '../../../../assets/conf/get-sub-conta.php',
+    //     method: 'POST',
+    //     data: { contaPrincipal: conta },
+    //     success: function(response) {
+    //       document.getElementById('subconta_lancamento').innerHTML = response;
+    //     },
+    //   });
+    // };
   </script>
 </body>
 

@@ -22,7 +22,7 @@ $ano_lancamento = htmlspecialchars($dados["ano_analise"]);
 $linhas_lancamento = ($dados["linhas"]);
 $pessoa_id = $_SESSION['us_id'] ?? null;
 
-if ($diferenca === 0) {
+if ($diferenca === "0.00" || $diferenca === "0") {
     $stmt = $conn->prepare("SELECT id_empresa FROM empresas WHERE nif = :nif LIMIT 1");
     $stmt->bindParam(':nif', $empresa_nif);
     $stmt->execute();
