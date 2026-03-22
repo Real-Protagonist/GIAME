@@ -142,7 +142,7 @@
           <div class="flex justify-center px-4">
             <div class="w-full max-w-3xl p-10 bg-white border rounded-2xl">
               <form class="w-full gap-6 form-grid form-col-2" id="form-submit" data-id="criarConta" data-title="Conta Criada!"
-                data-msg="A Conta foi Criada com sucesso." method="post" data-redirect="pgc">
+                data-msg="A Conta foi Criada com sucesso." method="post" data-redirect="../lancamentos/pgc">
                 <!-- Tipo de conta -->
                 <div class="form-full">
                   <label for="tipoConta" class="label">Tipo de conta</label>
@@ -185,7 +185,7 @@
                 <!-- Nº da conta -->
                 <div class="form-full">
                   <label for="numero_conta" class="label">Nº da conta</label>
-                  <input type="number" id="numero_conta" name="numero_conta" required
+                  <input type="number" id="numero_conta" step="0.1" name="numero_conta" required
                     placeholder="insira o númeoro da conta" class="input" />
                 </div>
 
@@ -229,8 +229,14 @@
   <script src="../../../../js/scripts.js"></script>
   <script>
     var conta = "";
+    var tipo = "";
     document.getElementById('contaPrincipal').onclick = function() {
+        // document.getElementById('numero_conta').value = 11.23; // Exemplo de como atualizar o número da conta com base na conta principal selecionada
       conta = this.value;
+      console.log(tipo);
+      console.log(conta);
+
+        printCod(tipo);
       // printOpt();
       $.ajax({
         url: '../../../../assets/conf/get-sub-conta.php',
@@ -242,11 +248,27 @@
       });
     };
 
+    function printCod(tipo) {
+      $.ajax({
+        url: '../../../../assets/conf/get-conta-subcont-cod.php',
+        method: 'POST',
+        data: { tipoConta: tipo, contaPrincipal: conta },
+        // success: function(response) {
+        //   document.getElementById('numero_conta').value = response;
+        // },
+        complete: function(response) {
+          // console.log("Código atualizado para: " + document.getElementById('numero_conta').value);
+          document.getElementById('numero_conta').value = response.responseText;
+        }
+      });
+    }
+
     document.getElementById('tipoConta').onclick = function() {
-      var tipo = this.value;
+      tipo = this.value;
       if (tipo === "Principal") {
         document.getElementById('contaPrincipal').disabled = true;
         document.getElementById('subConta').disabled = true;
+        printCod("contaPrincipal");
       } else if (tipo === "Subconta") {
         document.getElementById('contaPrincipal').disabled = false;
         document.getElementById('subConta').disabled = true;

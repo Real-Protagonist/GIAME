@@ -236,6 +236,7 @@ $next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancament
                     <!-- th>Nº do Movimento</th -->
                     <!-- th>Data do Movimento</th -->
                     <th>Conta principal</th>
+                    <th>SubConta</th>
                     <th>Conta Lançamento</th>
                     <th>Valor Débito</th>
                     <th>Valor Crédito</th>
@@ -269,6 +270,18 @@ $next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancament
                       <select name="subconta_lancamento_deb" id="subconta_lancamento" class="font-normal input sub-linha"
                         required>
                         <option disabled selected>Selcione a subconta</option>
+                        <!-- <option value="11">11.1 - Subconta A</option>
+                        <option value="32">11.2 - Subconta B</option>
+                        <option value="201">11.3 - Subconta C</option>
+                        <option value="301">11.4 - Subconta D</option>
+                        <option value="401">11.5 - Subconta E</option> -->
+                      </select>
+                    </td>
+
+                    <td>
+                      <select name="subconta_lancamento" id="subconta_lanca" class="font-normal input sub-linha"
+                        required>
+                        <option disabled selected>Selcione a subconta de Lançamento</option>
                         <!-- <option value="11">11.1 - Subconta A</option>
                         <option value="32">11.2 - Subconta B</option>
                         <option value="201">11.3 - Subconta C</option>

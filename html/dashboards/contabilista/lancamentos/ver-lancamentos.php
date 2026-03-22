@@ -175,7 +175,7 @@ $lancamentos = $get_lancamentos->fetchAll(PDO::FETCH_ASSOC);
                 <thead class="">
                   <tr>
                     <th>Data do Movimento</th>
-                    <th>Nº do Movimento</th>
+                    <th>Nº do Lançamento</th>
                     <th>Conta Principal</th>
                     <th>Conta Associada</th>
                     <th>Valor Débito</th>
