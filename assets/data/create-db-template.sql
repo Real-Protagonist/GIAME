@@ -160,8 +160,8 @@ CREATE TABLE IF NOT EXISTS `SUB_CONTA_3` (
     `codigo` VARCHAR(20) NOT NULL,
     `descricao` VARCHAR(255) NOT NULL,
     `nivel` INT NOT NULL,
-    `conta_pai` INT,
-    FOREIGN KEY (`conta_pai`) REFERENCES `sub_conta_2`(`id`)
+    `conta_pai` VARCHAR(20),
+    FOREIGN KEY (`conta_pai`) REFERENCES `sub_conta_2`(`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `SUB_CONTA_4` (
@@ -169,8 +169,8 @@ CREATE TABLE IF NOT EXISTS `SUB_CONTA_4` (
     `codigo` VARCHAR(20) NOT NULL,
     `descricao` VARCHAR(255) NOT NULL,
     `nivel` INT NOT NULL,
-    `conta_pai` INT,
-    FOREIGN KEY (`conta_pai`) REFERENCES `sub_conta_3`(`id`)
+    `conta_pai` VARCHAR(20),
+    FOREIGN KEY (`conta_pai`) REFERENCES `sub_conta_3`(`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 drop table if exists lancamentos;

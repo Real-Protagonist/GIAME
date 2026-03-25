@@ -617,7 +617,8 @@ async function criarConta(dadosFormulario) {
     descricao: document.getElementById('nome_conta')?.value || '',
     contaPrincipal: document.getElementById('contaPrincipal')?.value || '',
     subConta: document.getElementById('subConta')?.value || '',
-    tipoConta: document.getElementById('tipoConta')?.value || ''
+    tipoConta: document.getElementById('tipoConta')?.value || '',
+    subConta2: document.getElementById('subConta_2')?.value || ''
   }
 
   try {

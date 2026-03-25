@@ -20,5 +20,24 @@
         // echo ($max_codigo);
         $content .= $max_codigo;
         echo ($content);
+    } else if (isset($_POST['tipoConta']) && $_POST['tipoConta'] === "Subconta_2" && isset($_POST['contaPrincipal'])) {
+        $conta_pai = $_POST['contaPrincipal'];
+
+        $get_cod = $conn->prepare("SELECT id FROM sub_conta_2 WHERE codigo = :conta_pai");
+        $get_cod->bindParam(':conta_pai', $conta_pai);
+        $get_cod->execute();
+        $result = $get_cod->fetch(PDO::FETCH_ASSOC);
+
+        $get_cod = $conn->prepare("SELECT COUNT(codigo) AS count_codigo FROM SUB_CONTA_3 WHERE conta_pai = :conta_pai");
+        $get_cod->bindParam(':conta_pai', $result['id']);
+        $get_cod->execute();
+        $result = $get_cod->fetch(PDO::FETCH_ASSOC);
+        $cd = $result['count_codigo'];
+        $max_codigo = $_POST['contaPrincipal'] . "." . ($cd + 1);
+        // echo ($max_codigo);
+        $content .= $max_codigo;
+        echo ($content);
+    } else {
+        echo json_encode([]);
     }
 ?>

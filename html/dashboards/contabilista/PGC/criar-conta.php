@@ -150,6 +150,7 @@
                     <option value="" disabled selected>Selecione o tipo</option>
                     <option value="Principal">Principal</option>
                     <option value="Subconta">Subconta</option>
+                    <option value="Subconta_2">Subconta 2</option>
                     <option value="Conta associada">Conta associada</option>
                   </select>
                 </div>
@@ -157,7 +158,7 @@
                 <!-- Conta principal -->
                 <div class="form-full">
                   <label for="contaPrincipal" class="label">Conta principal</label>
-                  <select id="contaPrincipal" name="contaPrincipal" required class="input">
+                  <select id="contaPrincipal" name="contaPrincipal" required disabled class="input">
                     <option value="" disabled selected>Selecione a conta principal</option>
                     <?php foreach ($contas as $conta): ?>
                       <option value="<?= htmlspecialchars($conta['codigo']) ?>">
@@ -174,7 +175,7 @@
                 <!-- Subconta -->
                 <div class="form-full">
                   <label for="subConta" class="label">Subconta</label>
-                  <select id="subConta" name="subConta" required class="input">
+                  <select id="subConta" name="subConta" required disabled class="input">
                     <option value="" disabled selected>Selecione a subconta</option>
                     <!-- <option value="32">32.1 - Fornecedores xyz</option>
                     <option value="43">43.2 - Depósito à ordem xyz</option>
@@ -182,10 +183,18 @@
                   </select>
                 </div>
 
+                <!-- Subconta 2 -->
+                <div class="form-full">
+                  <label for="subConta_2" class="label">Subconta 2</label>
+                  <select id="subConta_2" name="subConta_2" required disabled class="input">
+                    <option value="" disabled selected>Selecione a subconta 2</option>
+                  </select>
+                </div>
+
                 <!-- Nº da conta -->
                 <div class="form-full">
                   <label for="numero_conta" class="label">Nº da conta</label>
-                  <input type="number" id="numero_conta" step="0.1" name="numero_conta" required
+                  <input type="text" id="numero_conta" name="numero_conta" required readonly
                     placeholder="insira o númeoro da conta" class="input" />
                 </div>
 
@@ -233,10 +242,8 @@
     document.getElementById('contaPrincipal').onclick = function() {
         // document.getElementById('numero_conta').value = 11.23; // Exemplo de como atualizar o número da conta com base na conta principal selecionada
       conta = this.value;
-      console.log(tipo);
-      console.log(conta);
 
-        printCod(tipo);
+      printCod(tipo);
       // printOpt();
       $.ajax({
         url: '../../../../assets/conf/get-sub-conta.php',
@@ -246,6 +253,16 @@
           document.getElementById('subConta').innerHTML = response;
         },
       });
+    };
+
+    document.getElementById('subConta').onclick = function() {
+      conta = this.value;
+      printCod(tipo);
+    };
+
+    document.getElementById('subConta_2').onclick = function() {
+      conta = this.value;
+      printCod(tipo);
     };
 
     function printCod(tipo) {
@@ -268,13 +285,16 @@
       if (tipo === "Principal") {
         document.getElementById('contaPrincipal').disabled = true;
         document.getElementById('subConta').disabled = true;
+        document.getElementById('subConta_2').disabled = false;
         printCod("contaPrincipal");
       } else if (tipo === "Subconta") {
         document.getElementById('contaPrincipal').disabled = false;
         document.getElementById('subConta').disabled = true;
-      } else if (tipo === "Conta associada") {
+        document.getElementById('subConta_2').disabled = true;
+      } else if (tipo === "Subconta_2") {
         document.getElementById('contaPrincipal').disabled = false;
         document.getElementById('subConta').disabled = false;
+        document.getElementById('subConta_2').disabled = true;
       }
     }
   </script>
