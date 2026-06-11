@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const numeroFinal = `${numeroAleatorio}${dataAtual}`; // Ex: 732505042025
 
   // Exibir no input
-  // document.getElementById('numero_lancamento').value = numeroFinal;
+  document.getElementById('numero_lancamento').value = numeroFinal;
 });
 
 

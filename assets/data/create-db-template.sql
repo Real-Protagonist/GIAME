@@ -173,6 +173,9 @@ CREATE TABLE IF NOT EXISTS `SUB_CONTA_4` (
     FOREIGN KEY (`conta_pai`) REFERENCES `sub_conta_3`(`codigo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+use giame;
+select * from sub_conta_2;
+
 drop table if exists lancamentos;
 
 CREATE TABLE IF NOT EXISTS `lancamentos` (
@@ -199,6 +202,13 @@ CREATE TABLE IF NOT EXISTS `lancamento_itens` (
     `tipo` ENUM('Debito', 'Credito') NOT NULL,
     FOREIGN KEY (`lancamento_id`) REFERENCES `lancamentos`(`lancamento_id`),
     FOREIGN KEY (`sub_conta_id`) REFERENCES `sub_conta_2`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS CONTA_LANCAMENTO (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+    `descricao` varchar(255) NOT NULL,
+    `contas_origem` BIGINT NOT NULL,
+    `codigo` BIGINT NOT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 alter table lancamento_itens MODIFY column sub_conta_id VARCHAR(20);

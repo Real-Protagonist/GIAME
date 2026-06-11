@@ -186,7 +186,7 @@
                 <!-- Subconta 2 -->
                 <div class="form-full">
                   <label for="subConta_2" class="label">Subconta 2</label>
-                  <select id="subConta_2" name="subConta_2" required disabled class="input">
+                  <select id="subConta_2" name="subConta_2" disabled class="input">
                     <option value="" disabled selected>Selecione a subconta 2</option>
                   </select>
                 </div>
@@ -258,12 +258,24 @@
     document.getElementById('subConta').onclick = function() {
       conta = this.value;
       printCod(tipo);
+      printOpt(conta);
     };
 
     document.getElementById('subConta_2').onclick = function() {
       conta = this.value;
       printCod(tipo);
     };
+
+    function printOpt(conta) {
+      $.ajax({
+        url: '../../../../assets/conf/fetch_contas.php',
+        method: 'POST',
+        data: { contaPrincipal: conta, tp: 'sb2' },
+        success: function(response) {
+          document.getElementById('subConta_2').innerHTML = response;
+        },
+      });
+    }
 
     function printCod(tipo) {
       $.ajax({
@@ -294,7 +306,7 @@
       } else if (tipo === "Subconta_2") {
         document.getElementById('contaPrincipal').disabled = false;
         document.getElementById('subConta').disabled = false;
-        document.getElementById('subConta_2').disabled = true;
+        document.getElementById('subConta_2').disabled = false;
       }
     }
   </script>

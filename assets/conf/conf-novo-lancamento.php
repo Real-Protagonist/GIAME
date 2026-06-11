@@ -14,6 +14,7 @@ if (!$dados) {
 $numero_lancamento = htmlspecialchars($dados["numero_lancamento"]);
 $data_lancamento = htmlspecialchars($dados["data_movimento"]);
 $descricao_lancamento = htmlspecialchars($dados["descricao_movimento"]);
+$conta_lancamento = htmlspecialchars($dados["conta_lancamento"]);
 $empresa_nif = htmlspecialchars($dados["nif_empresa"]);
 $total_debito = htmlspecialchars($dados["total_debito"]);
 $total_credito = htmlspecialchars($dados["total_credito"]);
@@ -61,6 +62,7 @@ if ($diferenca === "0.00" || $diferenca === "0") {
 
                 $linha_stmt->bindParam(':lancamento_id', $id_lancamento);
                 $linha_stmt->bindParam(':sub_conta_id', $subconta_result['id']);
+                $linha_stmt->bindParam(':conta_lancamento', $conta_lancamento);
                 $linha_stmt->bindParam(':valor', $valor);
                 $linha_stmt->bindParam(':tipo', $tipo);
                 $linha_stmt->execute();

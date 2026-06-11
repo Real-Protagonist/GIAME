@@ -1,0 +1,3 @@
+- [x] Substituir o campo `#conta_lancamento` por um combobox (input + datalist) em `criar-lancamentos.php`
+- [x] Atualizar JavaScript para preencher sugestões no datalist sem perder inserção manual
+- [x] Validar compatibilidade de `name="conta_lancamento"` com submissão do formulário
