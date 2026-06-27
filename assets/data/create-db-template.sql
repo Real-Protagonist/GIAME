@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `lancamentos` (
     `data_lancamento` DATE NOT NULL,
     `descricao` TEXT,
     `debito` DECIMAL(15,2) NOT NULL,
-    `credito` DECIMAL(15,2) NOT NULL,
+    `credito` DECIMAL(15,2) NOT NULL,   
     `diferenca` DECIMAL(15,2) NOT NULL,
     `ano_analise` INT NOT NULL,
     `criador_usuario` INT,
@@ -197,18 +197,18 @@ drop table if exists lancamento_itens;
 CREATE TABLE IF NOT EXISTS `lancamento_itens` (
     `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
     `lancamento_id` BIGINT,
-    `sub_conta_id` BIGINT,
+    `sub_conta_id` VARCHAR(20),
+    `nivel` INT NOT NULL,
     `valor` DECIMAL(15,2) NOT NULL,
     `tipo` ENUM('Debito', 'Credito') NOT NULL,
-    FOREIGN KEY (`lancamento_id`) REFERENCES `lancamentos`(`lancamento_id`),
-    FOREIGN KEY (`sub_conta_id`) REFERENCES `sub_conta_2`(`id`)
+    FOREIGN KEY (`lancamento_id`) REFERENCES `lancamentos`(`lancamento_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS CONTA_LANCAMENTO (
     `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
     `descricao` varchar(255) NOT NULL,
-    `contas_origem` BIGINT NOT NULL,
-    `codigo` BIGINT NOT NULL,
+    `contas_origem` VARCHAR(20) NOT NULL,
+    `codigo` VARCHAR(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 alter table lancamento_itens MODIFY column sub_conta_id VARCHAR(20);
@@ -312,6 +312,6 @@ INSERT INTO `conta_principal` (`codigo`, `descricao`, `nivel`) VALUES
                                         JOIN empresas e ON l.empresa_id = e.id_empresa
                                         JOIN usuario u ON l.criador_usuario = u.id
                                         WHERE u.id = 2
-                                        ORDER BY l.data_lancamento DESC, l.lancamento DESC
+                                        ORDER BY l.data_lancamento DESC, l.lancamento DESC  
 -- Additional table and procedure definitions can be added here as needed.
 -- End of create-db-template.sql

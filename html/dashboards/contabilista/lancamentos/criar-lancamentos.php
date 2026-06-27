@@ -237,7 +237,8 @@ $next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancament
                     <!-- th>Data do Movimento</th -->
                     <th>Conta principal</th>
                     <th>SubConta</th>
-                    <th>Conta de Lançamento</th>
+                    <th>Conta</th>
+                    <th>Descrição</th>
                     <th>Valor Débito</th>
                     <th>Valor Crédito</th>
                     <th class="text-right ">Ações</th>
@@ -268,22 +269,28 @@ $next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancament
 
                     <td>
                       <select name="subconta_lancamento_deb" id="subconta_lancamento"
-                        class="font-normal input sub-linha" onchange="selectCH(this.value)" required>
+                        class="font-normal input sub-linha" onchange="selectCH(this.value, 'linha_1')" required>
                         <option disabled selected>Selcione a subconta</option>
-                        <!-- <option value="11">11.1 - Subconta A</option>
-                        <option value="32">11.2 - Subconta B</option>
-                        <option value="201">11.3 - Subconta C</option>
-                        <option value="301">11.4 - Subconta D</option>
-                        <option value="401">11.5 - Subconta E</option> -->
                       </select>
                     </td>
 
                     <td>
-                      <input type="text" name="conta_lancamento" id="conta_lancamento" list="conta_lancamento_sugestoes"
-                        class="font-normal input" value="12212100025" placeholder="Digite ou selecione a conta" required>
-                      <datalist id="conta_lancamento_sugestoes">
-                        <option value="12212100025"></option>
-                      </datalist>
+                      <select name="conta_lance" id="conta_lance" class="font-normal input sub-linha"
+                        onchange="selectLance(this.value, 'linha_1')" required>
+                        <option disabled selected>Selcione a conta</option>
+                      </select>
+                      <!-- <input type="text" name="conta_lance" id="conta_lance" list="conta_lance"
+                        class="font-normal input" placeholder="0000" readonly required> -->
+                    </td>
+
+                    <td>
+                      <!-- <input type="text" name="descricao_movimento" id="descricao_movimento" class="font-normal input"
+                        required> -->
+                      <input type="text" name="conta_lancamento" id="conta_lancamento" class="font-normal input"
+                        placeholder="Digite a conta" required>
+                      <!-- <datalist id="conta_lancamento_sugestoes">
+                        <option value=""></option>
+                      </datalist> -->
                     </td>
 
                     <td>
@@ -356,12 +363,6 @@ $next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancament
     var linhaCount = [];
 
     function selectConta(conta, elemento) {
-      // console.log("Conta principal selecionada: ", elemento);
-      // console.log("Com querySelector: ",document.getElementById(elemento.closest('tr').id).querySelector('select[name="subconta_lancamento"]'));
-      // console.log("Elemento selecionado: ", document.getElementById(elemento.closest('tr').id));
-      // console.log("Elemento selecionado: ", document.getElementById(elemento.closest('tr').id).children[1].children[0].id);
-      // console.log("ID do elemento selecionado: ", document.getElementById('linha_1').id);
-      // printOpt();
       $.ajax({
         url: '../../../../assets/conf/get-sub-conta-lancamento.php',
         method: 'POST',
@@ -369,51 +370,83 @@ $next_lancamento_numero = $lancamento_result ? $lancamento_result['max_lancament
         success: function (response) {
           // document.getElementById('subconta_lancamento').innerHTML = response;
           document.getElementById(elemento).children[1].children[0].innerHTML = response;
-          atualizarSugestoesContaLancamento(elemento);
+          // atualizarSugestoesContaLancamento(elemento);
           // document.getElementById(document.getElementById(elemento.closest('tr').id).children[1].children[0].id).innerHTML = response;
           // document.querySelector('#' + document.getElementById(elemento.closest('tr').id).children[1].children[0].className.split(' ')[1]).innerHTML = response;
         },
       });
     }
 
-    function selectCH(subconta) {
+    function selectLance(conta, elemento) {
+      $.ajax({
+        url: '../../../../assets/conf/get-conta-lancamento.php',
+        method: 'POST',
+        data: { conta_lancamento: conta },
+        success: function (response) {
+          if (response != "Error404" || response != "Error404") {
+            document.getElementById(elemento).children[3].children[0].setAttribute("readonly", true);
+            document.getElementById(elemento).children[3].children[0].value = response;
+          } else {
+            document.getElementById(elemento).children[3].children[0].removeAttribute("readonly");
+            document.getElementById(elemento).children[3].children[0].value = "";
+          }
+          // document.getElementById('conta_lance').innerHTML = response;
+        },
+      });
+    }
+
+    function selectCH(subconta, elemento) {
       linhaCount.push(subconta);
-      console.log("Subconta selecionada: ", linhaCount);
+      if (subconta === "") {
+        document.getElementById(elemento).children[3].children[0].value = "";
+        return;
+      }
+      
+      $.ajax({
+        url: '../../../../assets/conf/get-conta-subcont-cod.php',
+        method: 'POST',
+        data: { lancamento: subconta },
+        success: function (response) {
+          document.getElementById(elemento).children[2].children[0].innerHTML = response;
+          // document.getElementById('conta_lance').innerHTML = response;
+        },
+      });
     }
 
-    function atualizarSugestoesContaLancamento(elementoLinha) {
-      const linha = document.getElementById(elementoLinha);
-      if (!linha) return;
+    // function atualizarSugestoesContaLancamento(elementoLinha) {
+    //   const linha = document.getElementById(elementoLinha);
+    //   if (!linha) return;
 
-      const subcontaSelect = linha.querySelector('select[name="subconta_lancamento_deb"]');
-      const contaLancamentoInput = linha.querySelector('input[name="conta_lancamento"]');
-      const datalist = linha.querySelector('datalist');
+    //   const subcontaSelect = linha.querySelector('select[name="subconta_lancamento_deb"]');
+    //   const contaLancamentoInput = linha.querySelector('input[name="conta_lancamento"]');
+    //   const datalist = linha.querySelector('datalist');
 
-      if (!subcontaSelect || !contaLancamentoInput || !datalist) return;
+    //   if (!subcontaSelect || !contaLancamentoInput || !datalist) return;
 
-      const opcoes = Array.from(subcontaSelect.options)
-        .map(opt => opt.value?.trim())
-        .filter(valor => valor && !isNaN(Number(valor)));
+    //   const opcoes = Array.from(subcontaSelect.options)
+    //     .map(opt => opt.value?.trim())
+    //     .filter(valor => valor && !isNaN(Number(valor)));
 
-      const valoresUnicos = [...new Set(opcoes)];
+    //   const valoresUnicos = [...new Set(opcoes)];
 
-      datalist.innerHTML = valoresUnicos
-        .map(valor => `<option value="${valor}"></option>`)
-        .join('');
+    //   datalist.innerHTML = valoresUnicos
+    //     .map(valor => `<option value="${valor}"></option>`)
+    //     .join('');
 
-      if (!contaLancamentoInput.value && valoresUnicos.length > 0) {
-        contaLancamentoInput.value = valoresUnicos[0];
-      }
-    }
+    //   if (!contaLancamentoInput.value && valoresUnicos.length > 0) {
+    //     contaLancamentoInput.value = valoresUnicos[0];
+    //   }
+    // }
 
-    document.addEventListener('change', function (event) {
-      if (event.target && event.target.matches('select[name="subconta_lancamento_deb"]')) {
-        const linha = event.target.closest('tr');
-        if (linha && linha.id) {
-          atualizarSugestoesContaLancamento(linha.id);
-        }
-      }
-    });
+    // document.addEventListener('change', function (event) {
+    //   console.log("Evento de mudança detectado em:", event.target);
+    //   // if (event.target && event.target.matches('select[name="subconta_lancamento_deb"]')) {
+    //   //   const linha = event.target.closest('tr');
+    //   //   if (linha && linha.id) {
+    //   //     atualizarSugestoesContaLancamento(linha.id);
+    //   //   }
+    //   // }
+    // });
     // var conta = "";
     // document.getElementById('conta_principal').onclick = function() {
     //   console.log("Conta principal selecionada: ", this.value);

@@ -554,9 +554,12 @@ function AdicionarLinha() {
   linhaN++;
   novaLinha.id = "linha_" + linhaN;
 
-// console.log("ID da nova linha: ",novaLinha.children[0]);
+// console.log("ID da nova linha: ",novaLinha.children[1].children[0]);
 // console.log("ds" + novaLinha.children[linhaN - 1].children[0].getAttribute("onchange"));
 novaLinha.children[0].children[0].setAttribute("onchange", "selectConta(this.value, '" + novaLinha.id + "')");
+novaLinha.children[1].children[0].setAttribute("onchange", "selectCH(this.value, '" + novaLinha.id + "')");
+novaLinha.children[2].children[0].setAttribute("onchange", "selectLance(this.value, '" + novaLinha.id + "')");
+
   // console.log("Linha adicionada: ", novaLinha);
 }
 
@@ -565,19 +568,21 @@ function coletarDadosLancamento() {
   const dadosLancamento = [];
 
   linhas.forEach((linha, index) => {
-    const conta = linha.querySelector('select[name="conta_debito"]') ?.value || '';
+    const conta = linha.querySelector('select[name="conta_principal"]') ?.value || '';
     const valorDebito = parseFloat(linha.querySelector('input[name="valor_debito"]') ?.value) || 0;
     const valorCredito = parseFloat(linha.querySelector('input[name="valor_credito"]') ?.value) || 0;
     const subconta = linha.querySelector('select[name="subconta_lancamento_deb"]') ?.value || '';
-    const descricao = linha.querySelector('input[name="descricao_movimento"]') ?.value || '';
+    const conta_lance = linha.querySelector('select[name="conta_lance"]') ?.value || '';
+    const descricao = linha.querySelector('input[name="conta_lancamento"]') ?.value || '';
 
     if (conta || descricao || valorDebito || valorCredito !== '0' || subconta !== '0') {
       dadosLancamento.push({
         linha: index + 1,
         conta: conta,
-        // descricao: descricao,
+        descricao: descricao,
         valorDebito: parseFloat(valorDebito),
         valorCredito: parseFloat(valorCredito),
+        conta_lancamento: conta_lance,
         subconta: subconta
       });
     }
@@ -593,6 +598,8 @@ async function enviarLancamento(dadosFormulario, linhasLancamento) {
     total_credito: document.getElementById('total_credito')?.value || '0',
     diferenca: document.getElementById('diferenca')?.value || '0'
   };
+
+  console.log(linhasLancamento);
 
   try {
     const response = await fetch('../../../../assets/conf/conf-novo-lancamento.php', {
