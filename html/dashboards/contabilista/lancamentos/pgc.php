@@ -1,30 +1,47 @@
 <?php
-  session_start();
-  if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../../../login.html");
-    session_destroy();
-    session_abort();
-    session_unset();
-    exit();
-  }
+session_start();
+if (!isset($_SESSION['user_id'])) {
+  header("Location: ../../../../login.html");
+  session_destroy();
+  session_abort();
+  session_unset();
+  exit();
+}
 
-  include "../../../../assets/conf/conf-dbcon.php";
-  // include "../../../../assets/conf/conf-register.php";
-  $get = $conn->prepare("SELECT * FROM conta_principal");
-  $get->execute();
-  $contas = $get->fetchAll(PDO::FETCH_ASSOC);
+include "../../../../assets/conf/conf-dbcon.php";
+// include "../../../../assets/conf/conf-register.php";
+$get = $conn->prepare("SELECT * FROM conta_principal");
+$get->execute();
+$contas = $get->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
+<?php
+function getLancamentos($conn, $conta_id)
+{
+  $get_sub = $conn->prepare("SELECT codigo, descricao FROM CONTA_LANCAMENTO WHERE contas_origem = :conta_id");
+  $get_sub->bindParam(':conta_id', $conta_id);
+  $get_sub->execute();
+  $sub_contas = $get_sub->fetchAll(PDO::FETCH_ASSOC);
+  foreach ($sub_contas as $sub_conta): ?>
+    <tr>
+      <td class="positionr"><?= htmlspecialchars($sub_conta['codigo']) ?></td>
+      <td class="positionl"><?= htmlspecialchars($sub_conta['descricao']) ?></td>
+    </tr>
+  <?php endforeach;
+} ?>
 
 <!DOCTYPE html>
 <html lang="en" class="h-full antialiased bg-gray-50">
 <style media="screen">
-  .positionr{
+  .position {
     text-align: right;
   }
-  .positionl{
+
+  .position {
     text-align: left;
   }
 </style>
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -151,7 +168,7 @@
             <div class="overflow-x-auto">
               <table class="w-full text-sm text-left text-gray-700 ">
                 <thead class="">
-                <tr>
+                  <tr>
                     <th>Contas</th>
                     <th>Descrição</th>
                   </tr>
@@ -163,7 +180,7 @@
                       <th><?= htmlspecialchars($conta['codigo']) ?></th>
                       <th><?= htmlspecialchars($conta['descricao']) ?></th>
                     </tr>
-                    
+
                     <?php
                     $get_sub = $conn->prepare("SELECT * FROM sub_conta_2 WHERE conta_pai = :conta_id");
                     $get_sub->bindParam(':conta_id', $conta['codigo']);
@@ -171,10 +188,49 @@
                     $sub_contas = $get_sub->fetchAll(PDO::FETCH_ASSOC);
                     foreach ($sub_contas as $sub_conta): ?>
                       <tr>
-                        <td class="positionr"><?= htmlspecialchars($sub_conta['codigo']) ?></td>
-                        <td class="positionl"><?= htmlspecialchars($sub_conta['descricao']) ?></td>
+                        <td class=""><?= htmlspecialchars($sub_conta['codigo']) ?></td>
+                        <td class=""><?= htmlspecialchars($sub_conta['descricao']) ?></td>
                       </tr>
+
+                      <!-- PEGANDO TODAS AS CONTAS DE LANÇAMENTO NESTA SUB-CONTA -->
+                      <?php
+                      getLancamentos($conn, $sub_conta['codigo']);
+                      ?>
+
+                      <?php
+                      $get_sub = $conn->prepare("SELECT * FROM SUB_CONTA_3 WHERE conta_pai = :conta_id");
+                      $get_sub->bindParam(':conta_id', $sub_conta['codigo']);
+                      $get_sub->execute();
+                      $sub_contas = $get_sub->fetchAll(PDO::FETCH_ASSOC);
+                      foreach ($sub_contas as $sub_conta): ?>
+                        <tr>
+                          <td class="positionr"><?= htmlspecialchars($sub_conta['codigo']) ?></td>
+                          <td class="positionl"><?= htmlspecialchars($sub_conta['descricao']) ?></td>
+                        </tr>
+
+                        <!-- PEGANDO TODAS AS CONTAS DE LANÇAMENTO NESTA SUB-CONTA -->
+                        <?php
+                        getLancamentos($conn, $sub_conta['codigo']);
+                        ?>
+
+                        <?php
+                        $get_sub = $conn->prepare("SELECT * FROM SUB_CONTA_4 WHERE conta_pai = :conta_id");
+                        $get_sub->bindParam(':conta_id', $sub_conta['codigo']);
+                        $get_sub->execute();
+                        $sub_contas = $get_sub->fetchAll(PDO::FETCH_ASSOC);
+                        foreach ($sub_contas as $sub_conta): ?>
+                          <tr>
+                            <td class="positionr"><?= htmlspecialchars($sub_conta['codigo']) ?></td>
+                            <td class="positionl"><?= htmlspecialchars($sub_conta['descricao']) ?></td>
+                          </tr>
+
+                          <!-- PEGANDO TODAS AS CONTAS DE LANÇAMENTO NESTA SUB-CONTA -->
+                          <?php
+                          getLancamentos($conn, $sub_conta['codigo']);
+                          ?>
+                        <?php endforeach; ?>
                       <?php endforeach; ?>
+                    <?php endforeach; ?>
                   <?php endforeach; ?>
                   <!-- <tr>
                     <th>11</th>
@@ -182,53 +238,8 @@
                   </tr>
 
                   <tr>
-                    <th>111</th>
-                    <th>Terrenos e recursos naturais</th>
-                  </tr>
-
-                  <tr>
-                    <td>1112</td>
-                    <td>Terrenos com arranjos</td>
-                  </tr>
-
-                  <tr>
-                    <th>112</th>
-                    <th>Edifício e outras construções</th>
-                  </tr>
-
-                  <tr>
-                    <td>1121</td>
-                    <td>Edifícios</td>
-                  </tr>
-
-                  <tr>
                     <th>113</th>
                     <th>Equipamento básico</th>
-                  </tr>
-
-                  <tr>
-                    <td>1131</td>
-                    <td>Material Industrial</td>
-                  </tr>
-
-                  <tr>
-                    <th>114</th>
-                    <th>Equipamento de Carga e Transporte</th>
-                  </tr>
-
-                  <tr>
-                    <th>115</th>
-                    <th>Equipamento administrativo</th>
-                  </tr>
-
-                  <tr>
-                    <th>12</th>
-                    <th>IMOBILIZAÇÕES INCORPÓREAS</th>
-                  </tr>
-
-                  <tr>
-                    <th>13</th>
-                    <th>INVESTIMENTOS FINANCEIROS</th>
                   </tr>
 
                   <tr>
